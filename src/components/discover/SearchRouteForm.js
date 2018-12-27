@@ -12,7 +12,8 @@ class SearchRouteForm extends Component {
   validateSchema = () => (
     Yup.object().shape({ 
       origin: Yup.string().min(2, "Too short!").required("You must enter an origin"),
-      destination: Yup.string().min(2, "Too short!").required("You must enter a destination")
+      destination: Yup.string().min(2, "Too short!").required("You must enter a destination"),
+      mode: Yup.string().required("Pick a travel mode.")
     })
   );
 
@@ -92,9 +93,9 @@ class SearchRouteForm extends Component {
           initialValues={{ 
             origin: "", 
             destination: "", 
-            travelMode: "driving", 
+            mode: "", 
             altRoutes: false, 
-            unit: "Imperial",
+            unit: "imperial",
             avoidTolls: false, avoidHighways: false, avoidFerries: false, avoidIndoor: false 
           }} // later unit preference should be set on acc settings
           onSubmit={this.onSubmit}

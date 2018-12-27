@@ -1,6 +1,42 @@
 import React, { Component } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import  { Button, Form as SemForm, Select, Checkbox } from "semantic-ui-react";
 import * as Yup from "yup";
+
+const SemanticField = ({ component, ...fieldProps }) => (
+  <Field
+    {...fieldProps}
+    render={({
+      field: { value, onBlur, ...field },
+      form: { setFieldValue, setFieldTouched },
+      ...props
+    }) =>
+      React.createElement(component, {
+        ...fieldProps,
+        ...field,
+        ...props,
+        ...(typeof value === 'boolean'
+          ? {
+              checked: value
+            }
+          : {
+              value
+            }),
+        onChange: (e, { value: newValue, checked }) =>
+          setFieldValue(fieldProps.name, newValue || checked),
+        onBlur: (e, blurProps) =>
+          blurProps ? setFieldTouched(fieldProps.name, blurProps.value) : onBlur(e)
+      })
+    }
+  />
+);
+
+const modeSelect = [
+  { value: "driving", text: "Driving" },
+  { value: "bicycling", text: "Biking" },
+  { value: "transit", text: "Transit" },
+  { value: "walking", text: "Walking" }
+] 
 
 class SearchRouteForm extends Component {
 
@@ -33,51 +69,48 @@ class SearchRouteForm extends Component {
 
   renderForm = ({ errors, status, touched, isSubmitting }) => {
     return (
-      <Form autoComplete="off" className="pure-form pure-form-stacked" >
-        <label>Origin</label>
-        <Field type="text" component="input" name="origin" placeholder="Anaheim" />
-        <ErrorMessage name="origin" component={this.renderError} />
+      <Form autoComplete="off" >
 
-        <label>Destination</label>
-        <Field type="text" component="input" name="destination" placeholder="Irvine" />
-        <ErrorMessage name="destination" component={this.renderError} />
+        <SemForm.Group>
+          <label>Origin</label>
+          <SemanticField type="text" component={SemForm.Input} name="origin" placeholder="Anaheim" />
+          <ErrorMessage name="origin" component={this.renderError} />
 
-        <label>Travel Mode</label>
-        <Field name="mode" component="select" style={{ padding: "2px"}}>
-          <option value="driving">Driving</option>
-          <option value="bicycling">Biking</option>
-          <option value="transit">Transit</option>
-          <option value="walking">Walking</option>
-        </Field>
+          <label>Destination</label>
+          <SemanticField type="text" component={SemForm.Input} name="destination" placeholder="Irvine" />
+          <ErrorMessage name="destination" component={this.renderError} />
+        </SemForm.Group>
+
+        
+        <SemanticField name="mode" component={Select} options={modeSelect} placeholder="Travel Mode" />
         <ErrorMessage name="mode" component={this.renderError} />
 
-        <label className="pure-checkbox">
-          <Field type="checkbox" component="input" name="altRoutes" /> Alt Routes
-        </label>
+        <SemForm.Group>
+          <label >
+            <SemanticField component={SemForm.Checkbox} name="altRoutes" label="Alt Routes"/>
+          </label>
+        </SemForm.Group>
 
-        <label>Unit</label>
-        <Field name="units" component="select" style={{ padding: "2px"}}>
-          <option value="imperial">Imperial</option>
-          <option value="metric">Metric</option>
-        </Field>
+        <SemanticField name="units" component={Select} options={[{ value: "imperial", text: "Imperial"}, { value: "metric", text: "Metric"}]} placeholder="Units" />
+        <SemForm.Group>
+          <h4>Avoid:</h4>
+          <label >
+            <SemanticField component={SemForm.Checkbox} name="avoidTolls" label="Tolls" />
+          </label>
+          <label >
+            <SemanticField component={SemForm.Checkbox} name="avoidHighways" label="Highways" />
+          </label>
+          <label >
+            <SemanticField component={SemForm.Checkbox} name="avoidFerries" label="Ferries" />
+          </label>
+          <label >
+            <SemanticField component={SemForm.Checkbox} name="avoidIndoor" label="Indoor" />
+          </label>
+        </SemForm.Group>
 
-        <h4>Avoid:</h4>
-        <label className="pure-checkbox">
-          <Field type="checkbox" component="input" name="avoidTolls" /> Tolls
-        </label>
-        <label className="pure-checkbox">
-          <Field type="checkbox" component="input" name="avoidHighways" /> Highways
-        </label>
-        <label className="pure-checkbox">
-          <Field type="checkbox" component="input" name="avoidFerries" /> Ferries
-        </label>
-        <label className="pure-checkbox">
-          <Field type="checkbox" component="input" name="avoidIndoor" /> Indoor
-        </label>
-
-        <button type="submit" className="pure-button pure-button-primary" disabled={isSubmitting} >
+        <Button type="submit" disabled={isSubmitting} >
           Submit
-        </button>
+        </Button>
 
       </Form>
     );
@@ -95,7 +128,7 @@ class SearchRouteForm extends Component {
             destination: "", 
             mode: "", 
             altRoutes: false, 
-            unit: "imperial",
+            units: "imperial",
             avoidTolls: false, avoidHighways: false, avoidFerries: false, avoidIndoor: false 
           }} // later unit preference should be set on acc settings
           onSubmit={this.onSubmit}

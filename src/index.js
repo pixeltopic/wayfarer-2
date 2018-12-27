@@ -12,6 +12,7 @@ import reducers from "./reducers";
 import SearchRouteForm from "./components/discover/SearchRouteForm";
 
 
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
 
@@ -21,6 +22,7 @@ ReactDOM.render(
     <Router history={history}>
       <App>
         <Route path="/" exact component={SearchRouteForm} />
+        
       </App>
     </Router>
   </Provider>,

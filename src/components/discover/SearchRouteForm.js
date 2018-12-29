@@ -1,35 +1,9 @@
 import React, { Component } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Select, Checkbox } from "semantic-ui-react";
+import { Formik, Form, ErrorMessage } from "formik";
+import  { Button, Form as SemForm, Select, Menu } from "semantic-ui-react";
 import * as Yup from "yup";
 
-const SemanticField = ({ component, ...fieldProps }) => (
-  <Field
-    {...fieldProps}
-    render={({
-      field: { value, onBlur, ...field },
-      form: { setFieldValue, setFieldTouched },
-      ...props
-    }) =>
-      React.createElement(component, {
-        ...fieldProps,
-        ...field,
-        ...props,
-        ...(typeof value === 'boolean'
-          ? {
-              checked: value
-            }
-          : {
-              value
-            }),
-        onChange: (e, { value: newValue, checked }) =>
-          setFieldValue(fieldProps.name, newValue || checked),
-        onBlur: (e, blurProps) =>
-          blurProps ? setFieldTouched(fieldProps.name, blurProps.value) : onBlur(e)
-      })
-    }
-  />
-);
+import SemanticField from "../helpers/SemanticField";
 
 const modeSelect = [
   { value: "driving", text: "Driving" },
@@ -71,46 +45,52 @@ class SearchRouteForm extends Component {
     return (
       <Form autoComplete="off" >
 
-        <SemForm.Group>
-          <label>Origin</label>
-          <SemanticField type="text" component={SemForm.Input} name="origin" placeholder="Anaheim" />
-          <ErrorMessage name="origin" component={this.renderError} />
+        <Menu.Item>
+          <Menu.Header>Origin</Menu.Header>
+          <SemForm.Group>
+            <SemanticField type="text" fluid component={SemForm.Input} name="origin" placeholder="Anaheim" />
+            <ErrorMessage name="origin" component={this.renderError} />
+          </SemForm.Group>
+        </Menu.Item>
+        <Menu.Item>
+          <Menu.Header>Destination</Menu.Header>
+          <SemForm.Group>
+            <SemanticField type="text" fluid component={SemForm.Input} name="destination" placeholder="Irvine" />
+            <ErrorMessage name="destination" component={this.renderError} />
+          </SemForm.Group>
+        </Menu.Item>
 
-          <label>Destination</label>
-          <SemanticField type="text" component={SemForm.Input} name="destination" placeholder="Irvine" />
-          <ErrorMessage name="destination" component={this.renderError} />
-        </SemForm.Group>
+        <Menu.Item>
+          <SemanticField name="mode" component={Select} fluid options={modeSelect} placeholder="Travel Mode" />
+          <ErrorMessage name="mode" component={this.renderError} />
+        </Menu.Item>
 
-        
-        <SemanticField name="mode" component={Select} options={modeSelect} placeholder="Travel Mode" />
-        <ErrorMessage name="mode" component={this.renderError} />
+        <Menu.Item>
+          <SemForm.Group>
+            <SemanticField component={SemForm.Checkbox} name="altRoutes" label="Alt Routes"/>      
+          </SemForm.Group>
+        </Menu.Item>
 
-        <SemForm.Group>
-          <label >
-            <SemanticField component={SemForm.Checkbox} name="altRoutes" label="Alt Routes"/>
-          </label>
-        </SemForm.Group>
+        <Menu.Item>
+          <Menu.Header>Unit Display</Menu.Header>
+          <SemanticField name="units" fluid component={Select} options={[{ value: "imperial", text: "Imperial"}, { value: "metric", text: "Metric"}]} placeholder="Units" />
+        </Menu.Item>
 
-        <SemanticField name="units" component={Select} options={[{ value: "imperial", text: "Imperial"}, { value: "metric", text: "Metric"}]} placeholder="Units" />
-        <SemForm.Group>
-          <h4>Avoid:</h4>
-          <label >
-            <SemanticField component={SemForm.Checkbox} name="avoidTolls" label="Tolls" />
-          </label>
-          <label >
-            <SemanticField component={SemForm.Checkbox} name="avoidHighways" label="Highways" />
-          </label>
-          <label >
-            <SemanticField component={SemForm.Checkbox} name="avoidFerries" label="Ferries" />
-          </label>
-          <label >
-            <SemanticField component={SemForm.Checkbox} name="avoidIndoor" label="Indoor" />
-          </label>
-        </SemForm.Group>
+        <Menu.Item>
+          <Menu.Header>Avoid</Menu.Header>
+          <SemForm.Group>     
+              <SemanticField component={SemForm.Checkbox} name="avoidTolls" label="Tolls" />  
+              <SemanticField component={SemForm.Checkbox} name="avoidHighways" label="Highways" />
+              <SemanticField component={SemForm.Checkbox} name="avoidFerries" label="Ferries" />
+              <SemanticField component={SemForm.Checkbox} name="avoidIndoor" label="Indoor" />
+          </SemForm.Group>
+        </Menu.Item>
 
-        <Button type="submit" disabled={isSubmitting} >
-          Submit
-        </Button>
+        <Menu.Item>
+          <Button type="submit" disabled={isSubmitting} >
+            Submit
+          </Button>
+        </Menu.Item>
 
       </Form>
     );
@@ -119,7 +99,7 @@ class SearchRouteForm extends Component {
 
   render () {
     return(
-      <div>
+      <Menu vertical>
         <Formik
           validationSchema={this.validateSchema()}
           validate={this.validateForm}
@@ -134,7 +114,7 @@ class SearchRouteForm extends Component {
           onSubmit={this.onSubmit}
           render={this.renderForm} 
         />
-      </div>
+      </Menu>
     );
   }
 }

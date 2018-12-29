@@ -9,8 +9,13 @@ import App from "./components/App";
 import history from "./history";
 import reducers from "./reducers";
 
-import SearchRouteForm from "./components/discover/SearchRouteForm";
+import { routes } from "./utils";
 
+import Discover from "./components/discover/Discover";
+import Signup from "./components/auth/Signup";
+
+// cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\client
+// cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -21,8 +26,11 @@ ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
       <App>
-        <Route path="/" exact component={SearchRouteForm} />
-        
+        <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
+        <Route path={routes.SIGNIN} exact component={() => <div>Sign In Component</div>} />
+        <Route path={routes.SIGNUP} exact component={Signup} />
+        <Route path={routes.DISCOVER} exact component={Discover} />
+        <Route path={routes.DASHBOARD} exact component={() => <div>Dashboard Component (Auth Protected)</div>} />
       </App>
     </Router>
   </Provider>,

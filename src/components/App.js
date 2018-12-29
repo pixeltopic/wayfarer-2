@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import Navbar from "./common/Navbar";
 
 class App extends Component {
   render() {
     return (
-      <div>Hello World App.js
+      <div>
+        <Navbar />
         {this.props.children}
       </div>
     );

@@ -59,7 +59,7 @@ class Signup extends Component {
             fluid 
             size="large"
           >
-            Submit
+            Register
           </Button>
         </Form>
       </Segment>

@@ -6,7 +6,7 @@ import MediaQuery from "react-responsive";
 
 import { SemFieldTxt } from "../helpers/SemanticField";
 
-class Signup extends Component {
+class Signin extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
@@ -15,22 +15,12 @@ class Signup extends Component {
 
   validateSchema = () => (
     Yup.object().shape({ 
-      email: Yup.string().email("Not a valid email.").required("You need an email!"),
-      password: Yup.string().min(5, "Too short!").required("You need a password!")
+      email: Yup.string().required("You need an email!"),
+      password: Yup.string().required("You need a password!")
     })
   );
 
-  validateForm = (values) => {
-    const errors = {};
-    if (values.password !== values.confirmPassword) {
-      errors.confirmPassword = "Your password doesn't match!";
-    }
-
-    return errors;
-  }
-
   renderError = props => {
-    // console.log(props);
     return <div style={{ color: "red" }}>{props.children}</div>;
   }
 
@@ -40,7 +30,7 @@ class Signup extends Component {
         <div style={{ textAlign: "center" }}>
           <Header as="h2" color="teal" icon>
             <Icon name="user circle" />
-            Sign Up for an account
+            Sign In to Your Account
           </Header>
         </div>
         <Form>
@@ -48,8 +38,7 @@ class Signup extends Component {
           <ErrorMessage name="email" component={this.renderError} />
           <SemFieldTxt type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="password" placeholder="password" />
           <ErrorMessage name="password" component={this.renderError} />
-          <SemFieldTxt type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="confirmPassword" placeholder="confirm password" />
-          <ErrorMessage name="confirmPassword" component={this.renderError} />
+          
           <Button 
             type="submit" 
             style={{ marginTop: "20px" }} 
@@ -59,7 +48,7 @@ class Signup extends Component {
             fluid 
             size="large"
           >
-            Register
+            Sign in
           </Button>
         </Form>
       </Segment>
@@ -88,13 +77,12 @@ class Signup extends Component {
     return (
       <Formik 
         render={this.renderWithQuery}
-        initialValues={{ email: "", password: "", confirmPassword: "" }}
+        initialValues={{ email: "", password: "" }}
         validationSchema={this.validateSchema}
-        validate={this.validateForm}
         onSubmit={this.onSubmit}
       />
     );
   }
 }
 
-export default Signup;
+export default Signin;

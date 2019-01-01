@@ -13,6 +13,7 @@ import { routes } from "./utils";
 
 import Discover from "./components/discover/Discover";
 import Signup from "./components/auth/Signup";
+import Signin from "./components/auth/Signin";
 
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\client
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
@@ -27,7 +28,7 @@ ReactDOM.render(
     <Router history={history}>
       <App>
         <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
-        <Route path={routes.SIGNIN} exact component={() => <div>Sign In Component</div>} />
+        <Route path={routes.SIGNIN} exact component={Signin} />
         <Route path={routes.SIGNUP} exact component={Signup} />
         <Route path={routes.DISCOVER} exact component={Discover} />
         <Route path={routes.DASHBOARD} exact component={() => <div>Dashboard Component (Auth Protected)</div>} />

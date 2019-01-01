@@ -16,6 +16,7 @@ class SearchRouteForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
+    console.log(process.env.REACT_APP_BACKEND_KEY);
     actions.setSubmitting(false);
   }
 

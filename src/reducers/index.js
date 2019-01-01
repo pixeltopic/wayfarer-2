@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
+import errorReducer from "./errorReducer";
 import authReducer from "./authReducer";
 
 export default combineReducers({
- auth: authReducer
+  error: errorReducer, // stores all error messages in the application. error messages are cleared through dispatches
+  auth: authReducer
 });

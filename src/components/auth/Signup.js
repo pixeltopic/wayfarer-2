@@ -1,15 +1,21 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Segment, Header, Icon } from "semantic-ui-react";
+import  { Button, Form as SemForm, Segment, Header, Icon, Message } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
 import { SemFieldTxt } from "../helpers/SemanticField";
+import { signup } from "../../actions";
+import history from "../../history";
 
 class Signup extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
+    this.props.signup(values, () => {
+      history.push("/");
+    });
     actions.setSubmitting(false);
   }
 
@@ -33,6 +39,13 @@ class Signup extends Component {
     // console.log(props);
     return <div style={{ color: "red" }}>{props.children}</div>;
   }
+
+  renderServerError = () => (
+    <Message negative>
+      <Message.Header>Oops!</Message.Header>
+      <p>{this.props.serverErrorMessage}</p>
+    </Message>
+  );
 
   renderForm = ({ isSubmitting }) => {
     return (
@@ -61,6 +74,7 @@ class Signup extends Component {
           >
             Register
           </Button>
+          {this.props.serverErrorMessage && this.renderServerError()}
         </Form>
       </Segment>
     );
@@ -97,4 +111,8 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+const mapStateToProps = state => {
+  return { auth: state.auth, serverErrorMessage: state.error.authMessage };
+}
+
+export default connect(mapStateToProps, { signup })(Signup);

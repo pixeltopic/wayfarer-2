@@ -12,6 +12,7 @@ import reducers from "./reducers";
 import { routes } from "./utils";
 
 import Discover from "./components/discover/Discover";
+import Dashboard from "./components/dashboard/Dashboard";
 import Signup from "./components/auth/Signup";
 import Signin from "./components/auth/Signin";
 
@@ -31,7 +32,7 @@ ReactDOM.render(
         <Route path={routes.SIGNIN} exact component={Signin} />
         <Route path={routes.SIGNUP} exact component={Signup} />
         <Route path={routes.DISCOVER} exact component={Discover} />
-        <Route path={routes.DASHBOARD} exact component={() => <div>Dashboard Component (Auth Protected)</div>} />
+        <Route path={routes.DASHBOARD} exact component={Dashboard} />
       </App>
     </Router>
   </Provider>,

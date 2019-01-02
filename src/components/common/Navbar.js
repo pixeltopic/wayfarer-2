@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
 import { Menu, Icon, Dropdown } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 
@@ -60,4 +61,8 @@ class Navbar extends Component {
   }
 }
 
-export default withRouter(Navbar);
+const mapStateToProps = state => {
+  return { authenticated: state.auth.authenticated }
+}
+
+export default connect(mapStateToProps)(withRouter(Navbar));

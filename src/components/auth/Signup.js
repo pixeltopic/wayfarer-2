@@ -11,11 +11,17 @@ import history from "../../history";
 
 class Signup extends Component {
 
+  state = { disableButton: false };
+
   onSubmit = (values, actions) => {
+    this.setState({ disableButton: true});
     console.log(values);
-    this.props.signup(values, () => {
-      history.push("/");
-    });
+
+    this.props.signup(
+      values, 
+      () => this.setState({ disableButton: false }, () => history.push("/")), 
+      () => this.setState({ disableButton: false })
+    );
     actions.setSubmitting(false);
   }
 
@@ -66,8 +72,8 @@ class Signup extends Component {
           <Button 
             type="submit" 
             style={{ marginTop: "20px" }} 
-            loading={isSubmitting}
-            disabled={isSubmitting}
+            loading={this.state.disableButton}
+            disabled={this.state.disableButton}
             className="teal" 
             fluid 
             size="large"

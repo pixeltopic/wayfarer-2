@@ -16,7 +16,7 @@ class SearchRouteForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
-    console.log(process.env.REACT_APP_BACKEND_KEY);
+    // console.log(process.env.REACT_APP_BACKEND_KEY);
     actions.setSubmitting(false);
   }
 
@@ -38,7 +38,7 @@ class SearchRouteForm extends Component {
   }
 
   renderError = props => {
-    console.log(props);
+    // console.log(props);
     return <div style={{ color: "red" }}>{props.children}</div>;
   }
 

@@ -5,6 +5,8 @@ import { AUTH_USER, AUTH_ERROR } from "./types";
 
 export const signup = ({ email, password }, callback) => async dispatch => {
   try {
+    console.log(`${process.env.REACT_APP_API_URL}/api/signup`);
+    console.log(process.env.REACT_APP_API_URL);
     const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/signup`, { email, password });
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_ERROR, payload: "" });

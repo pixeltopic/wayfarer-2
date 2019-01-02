@@ -15,13 +15,20 @@ import Discover from "./components/discover/Discover";
 import Dashboard from "./components/dashboard/Dashboard";
 import Signup from "./components/auth/Signup";
 import Signin from "./components/auth/Signin";
+import Signout from "./components/auth/Signout";
 
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\client
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducers, {}, composeEnhancers(applyMiddleware(thunk)));
+const store = createStore(
+  reducers, 
+  {
+    auth: { authenticated: localStorage.getItem("token") }
+  }, 
+  composeEnhancers(applyMiddleware(thunk))
+);
 
 
 ReactDOM.render(
@@ -31,6 +38,7 @@ ReactDOM.render(
         <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
         <Route path={routes.SIGNIN} exact component={Signin} />
         <Route path={routes.SIGNUP} exact component={Signup} />
+        <Route path={routes.SIGNOUT} exact component={Signout} />
         <Route path={routes.DISCOVER} exact component={Discover} />
         <Route path={routes.DASHBOARD} exact component={Dashboard} />
       </App>

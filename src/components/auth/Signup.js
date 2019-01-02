@@ -8,6 +8,7 @@ import MediaQuery from "react-responsive";
 import { SemFieldTxt } from "../helpers/SemanticField";
 import { signup } from "../../actions";
 import history from "../../history";
+import requireNoAuth from "../helpers/hocs/requireNoAuth";
 
 class Signup extends Component {
 
@@ -19,7 +20,7 @@ class Signup extends Component {
 
     this.props.signup(
       values, 
-      () => this.setState({ disableButton: false }, () => history.push("/")), 
+      () => () => history.push("/"), 
       () => this.setState({ disableButton: false })
     );
     actions.setSubmitting(false);
@@ -121,4 +122,4 @@ const mapStateToProps = state => {
   return { auth: state.auth, serverErrorMessage: state.error.authMessage };
 }
 
-export default connect(mapStateToProps, { signup })(Signup);
+export default connect(mapStateToProps, { signup })(requireNoAuth(Signup));

@@ -1,15 +1,28 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Segment, Header, Icon } from "semantic-ui-react";
+import  { Button, Form as SemForm, Segment, Header, Icon, Message } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
 import { SemFieldTxt } from "../helpers/SemanticField";
+import { signin } from "../../actions";
+import history from "../../history";
+import requireNoAuth from "../helpers/hocs/requireNoAuth";
 
 class Signin extends Component {
 
+  state = { disableButton: false };
+
   onSubmit = (values, actions) => {
+    this.setState({ disableButton: true});
     console.log(values);
+
+    this.props.signin(
+      values, 
+      () => () => history.push("/"), 
+      () => this.setState({ disableButton: false })
+    );
     actions.setSubmitting(false);
   }
 
@@ -21,8 +34,16 @@ class Signin extends Component {
   );
 
   renderError = props => {
+    // console.log(props);
     return <div style={{ color: "red" }}>{props.children}</div>;
   }
+
+  renderServerError = () => (
+    <Message negative>
+      <Message.Header>Oops!</Message.Header>
+      <p>{this.props.serverErrorMessage}</p>
+    </Message>
+  );
 
   renderForm = ({ isSubmitting }) => {
     return (
@@ -30,7 +51,7 @@ class Signin extends Component {
         <div style={{ textAlign: "center" }}>
           <Header as="h2" color="teal" icon>
             <Icon name="user circle" />
-            Sign In to Your Account
+            Sign In
           </Header>
         </div>
         <Form>
@@ -42,14 +63,15 @@ class Signin extends Component {
           <Button 
             type="submit" 
             style={{ marginTop: "20px" }} 
-            loading={isSubmitting}
-            disabled={isSubmitting}
+            loading={this.state.disableButton}
+            disabled={this.state.disableButton}
             className="teal" 
             fluid 
             size="large"
           >
-            Sign in
+            Log In
           </Button>
+          {this.props.serverErrorMessage && this.renderServerError()}
         </Form>
       </Segment>
     );
@@ -85,4 +107,8 @@ class Signin extends Component {
   }
 }
 
-export default Signin;
+const mapStateToProps = state => {
+  return { auth: state.auth, serverErrorMessage: state.error.authMessage };
+}
+
+export default connect(mapStateToProps, { signin })(requireNoAuth(Signin));

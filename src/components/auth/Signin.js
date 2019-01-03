@@ -6,13 +6,17 @@ import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
 import { SemFieldTxt } from "../helpers/SemanticField";
-import { signin } from "../../actions";
+import { signin, resetAuthMessage } from "../../actions";
 import history from "../../history";
 import requireNoAuth from "../helpers/hocs/requireNoAuth";
 
 class Signin extends Component {
 
   state = { disableButton: false };
+
+  componentWillUnmount() {
+    this.props.resetAuthMessage();
+  }
 
   onSubmit = (values, actions) => {
     this.setState({ disableButton: true});
@@ -111,4 +115,4 @@ const mapStateToProps = state => {
   return { auth: state.auth, serverErrorMessage: state.error.authMessage };
 }
 
-export default connect(mapStateToProps, { signin })(requireNoAuth(Signin));
+export default connect(mapStateToProps, { signin, resetAuthMessage })(requireNoAuth(Signin));

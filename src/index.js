@@ -9,7 +9,7 @@ import App from "./components/App";
 import history from "./history";
 import reducers from "./reducers";
 
-import { routes } from "./utils";
+import { routes, verifyToken } from "./utils";
 
 import Discover from "./components/discover/Discover";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -22,10 +22,20 @@ import Signout from "./components/auth/Signout";
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const checkToken = () => {
+  const token = localStorage.getItem("token");
+  if (verifyToken(token)) {
+    return token;
+  } else {
+    localStorage.removeItem("token");
+    return "";
+  }
+}
 const store = createStore(
   reducers, 
   {
-    auth: { authenticated: localStorage.getItem("token") }
+    auth: { authenticated: checkToken() }
   }, 
   composeEnhancers(applyMiddleware(thunk))
 );

@@ -3,7 +3,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Select, Menu } from "semantic-ui-react";
 import * as Yup from "yup";
 
-import { SemField, SemFieldTxt } from "../helpers/SemanticField";
+import SemField from "../helpers/SemanticField";
 
 const modeSelect = [
   { value: "driving", text: "Driving" },
@@ -49,14 +49,14 @@ class SearchRouteForm extends Component {
         <Menu.Item>
           <Menu.Header>Origin</Menu.Header>
           <SemForm.Group>
-            <SemFieldTxt type="text" fluid component={SemForm.Input} name="origin" placeholder="Anaheim" />
+            <SemField type="text" fluid component={SemForm.Input} name="origin" placeholder="Anaheim" />
             <ErrorMessage name="origin" component={this.renderError} />
           </SemForm.Group>
         </Menu.Item>
         <Menu.Item>
           <Menu.Header>Destination</Menu.Header>
           <SemForm.Group>
-            <SemFieldTxt type="text" fluid component={SemForm.Input} name="destination" placeholder="Irvine" />
+            <SemField type="text" fluid component={SemForm.Input} name="destination" placeholder="Irvine" />
             <ErrorMessage name="destination" component={this.renderError} />
           </SemForm.Group>
         </Menu.Item>

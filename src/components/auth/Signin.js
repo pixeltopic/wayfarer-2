@@ -5,7 +5,7 @@ import  { Button, Form as SemForm, Segment, Header, Icon, Message } from "semant
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
-import { SemFieldTxt } from "../helpers/SemanticField";
+import SemField from "../helpers/SemanticField";
 import { signin, resetAuthMessage } from "../../actions";
 import history from "../../history";
 import requireNoAuth from "../helpers/hocs/requireNoAuth";
@@ -59,9 +59,9 @@ class Signin extends Component {
           </Header>
         </div>
         <Form>
-          <SemFieldTxt type="text" fluid icon="user" iconPosition="left" component={SemForm.Input} name="email" placeholder="email" />
+          <SemField type="text" fluid icon="user" iconPosition="left" component={SemForm.Input} name="email" placeholder="email" />
           <ErrorMessage name="email" component={this.renderError} />
-          <SemFieldTxt type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="password" placeholder="password" />
+          <SemField type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="password" placeholder="password" />
           <ErrorMessage name="password" component={this.renderError} />
           
           <Button 

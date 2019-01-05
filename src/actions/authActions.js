@@ -1,4 +1,3 @@
-import axios from "axios";
 import server from "../api/server";
 
 import { AUTH_USER, AUTH_ERROR, AUTH_ERROR_RESET } from "./types";
@@ -7,7 +6,7 @@ export const signup = ({ email, password }, callback=null, callbackError=null) =
   // accepts an email and password; signs up/authenticates user and updates global state w/ token if valid.
   // If invalid (eg. email already used) sends an error message to the `error` reducer
   try {
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/signup`, { email, password });
+    const response = await server.post(`/api/signup`, { email, password });
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_ERROR, payload: "" });
     localStorage.setItem("token", response.data.token);
@@ -27,7 +26,7 @@ export const signin = ({ email, password }, callback=null, callbackError=null) =
   // accepts an email and password; authenticates user and updates global state w/ token if valid.
   // If invalid (eg. email already used) sends an error message to the `error` reducer
   try {
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/signin`, { email, password });
+    const response = await server.post(`/api/signin`, { email, password });
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_ERROR, payload: "" });
     localStorage.setItem("token", response.data.token);

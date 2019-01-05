@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Select, Menu } from "semantic-ui-react";
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
+import { fetchDirections } from "../../actions";
 
 const modeSelect = [
   { value: "driving", text: "Driving" },
@@ -16,7 +18,7 @@ class SearchRouteForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
-    // console.log(process.env.REACT_APP_BACKEND_KEY);
+    this.props.fetchDirections(values);
     actions.setSubmitting(false);
   }
 
@@ -120,4 +122,4 @@ class SearchRouteForm extends Component {
   }
 }
 
-export default SearchRouteForm;
+export default connect(null, { fetchDirections })(SearchRouteForm);

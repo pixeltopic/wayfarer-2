@@ -1,4 +1,5 @@
 import axios from "axios";
+import server from "../api/server";
 
 import { AUTH_USER, AUTH_ERROR, AUTH_ERROR_RESET } from "./types";
 
@@ -63,10 +64,34 @@ export const updateToken = (response, acceptingToken=false) => dispatch => {
   if (acceptingToken) {
     dispatch({ type: AUTH_USER, payload: response });
   } else {
-    const token = response.data ? response.data.auth.token : null;
+    if (response.data && response.data.refreshedToken !== undefined) {
+      // if undefined, means property was not included in the response.data, so token is still valid. So do nothing.
+      // if "", token is no longer valid for refreshing, do nothing. Instead show proper error message on component (or sign them out and send them to login autoamtically)
+      // if "sometoken...", token has been refreshed, update global state with it.
+      if (response.data.refreshedToken !== "") {
+        localStorage.setItem("token", response.data.refreshedToken);
+        dispatch({ type: AUTH_USER, payload: response.data.refreshedToken }); 
+        console.log("Token updated successfully");
+      }
 
-    if (token) {
-      dispatch({ type: AUTH_USER, payload: token });
     }
+
+  }
+}
+
+export const refreshToken = () => async (dispatch, getState) => {
+  // attempts to refresh a token with current user's token and updates global state accordingly.
+  try {
+
+    const config = { 
+      headers : { authorization: getState().auth.authenticated }  
+    };
+    
+    const response = await server.post("/api/refreshtoken", null, getState().auth.authenticated ? config : null);
+
+    await dispatch(updateToken(response));
+
+  } catch(e) {
+    console.log(e);
   }
 }

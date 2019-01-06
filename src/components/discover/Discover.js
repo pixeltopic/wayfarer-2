@@ -1,16 +1,54 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Grid, Menu, Container } from "semantic-ui-react";
 
 import SearchRouteForm from "./SearchRouteForm";
 import DirectionSteps from "./DirectionSteps";
 
 class Discover extends Component {
+
+  state = { activeItem: "directions" };
+
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+
+  renderBody() {
+    switch(this.state.activeItem) {
+      case "directions":
+        return <DirectionSteps />
+      case "incidents":
+        return <div>Incidents Placeholder</div>
+      default:
+        return null;
+    }
+  }
+
   render() {
     return (
       <Container>
         <Menu>
-          <Menu.Item position="right" >
-            Routes
+          <Menu.Item 
+            name="directions"
+            active={this.state.activeItem === "directions"}
+            disabled={!this.props.routes}
+            onClick={this.handleItemClick}
+          >
+            Directions
+          </Menu.Item>
+          <Menu.Item 
+            name="incidents"
+            active={this.state.activeItem === "incidents"}
+            disabled={!this.props.routes}
+            onClick={this.handleItemClick}
+          >
+            Incidents
+          </Menu.Item>
+          <Menu.Item 
+            name="places"
+            active={this.state.activeItem === "places"}
+            disabled={!this.props.routes}
+            onClick={this.handleItemClick}
+          >
+            Places
           </Menu.Item>
         </Menu>
         <Grid stackable doubling>
@@ -18,7 +56,7 @@ class Discover extends Component {
             <SearchRouteForm />
           </Grid.Column>
           <Grid.Column stretched width={12} >
-            <DirectionSteps />
+            {this.renderBody()}
           </Grid.Column>
         </Grid>
       </Container>
@@ -26,4 +64,8 @@ class Discover extends Component {
   }
 }
 
-export default Discover;
+const mapStateToProps = state => {
+  return { routes: state.maps.routes };
+}
+
+export default connect(mapStateToProps)(Discover);

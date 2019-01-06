@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Icon, Item, Tab } from "semantic-ui-react";
-import _ from "lodash";
 
 class DirectionSteps extends Component {
 

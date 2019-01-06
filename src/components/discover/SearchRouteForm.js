@@ -102,7 +102,7 @@ class SearchRouteForm extends Component {
 
   render () {
     return(
-      <Menu vertical>
+      <Menu vertical fluid>
         <Formik
           validationSchema={this.validateSchema()}
           validate={this.validateForm}

@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import Navbar from "./common/Navbar";
+import Footer from "./common/Footer";
 
 class App extends Component {
   render() {
     return (
       <div>
         <Navbar />
-        {this.props.children}
+        <div style={{ marginTop: "2em" }}>
+          {this.props.children}
+        </div>
+        <Footer />
       </div>
     );
   }

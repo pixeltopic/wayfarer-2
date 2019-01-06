@@ -49,7 +49,7 @@ class Navbar extends Component {
 
   render() {
     return (
-      <Menu borderless stackable style={{ marginBottom: "0px", borderRadius: "0px" }}>
+      <Menu inverted borderless stackable style={{ marginBottom: "0px", borderRadius: "0px" }}>
         
           <Menu.Item header>
             <Link to={routes.HOME} >Wayfarer 2</Link>

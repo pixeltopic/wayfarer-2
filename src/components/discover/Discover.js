@@ -4,6 +4,7 @@ import { Grid, Menu, Container } from "semantic-ui-react";
 
 import SearchRouteForm from "./SearchRouteForm";
 import DirectionSteps from "./DirectionSteps";
+import Incidents from "./Incidents";
 
 class Discover extends Component {
 
@@ -14,9 +15,9 @@ class Discover extends Component {
   renderBody() {
     switch(this.state.activeItem) {
       case "directions":
-        return <DirectionSteps />
+        return <DirectionSteps />;
       case "incidents":
-        return <div>Incidents Placeholder</div>
+        return <Incidents />;
       default:
         return null;
     }

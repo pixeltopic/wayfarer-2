@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Select, Menu } from "semantic-ui-react";
+import  { Button, Form as SemForm, Select, Menu, Message } from "semantic-ui-react";
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
@@ -16,9 +16,18 @@ const modeSelect = [
 
 class SearchRouteForm extends Component {
 
+  state = { disableButton: false, errorMessage: "" };
+
   onSubmit = (values, actions) => {
     console.log(values);
-    this.props.fetchDirections(values);
+    this.setState(
+      { disableButton: true }, 
+      () => this.props.fetchDirections(
+        values, 
+        () => this.setState({ disableButton: false, errorMessage: "" }),
+        (payload) => this.setState({ disableButton: false, errorMessage: payload })
+      )
+    );
     actions.setSubmitting(false);
   }
 
@@ -42,6 +51,17 @@ class SearchRouteForm extends Component {
   renderError = props => {
     // console.log(props);
     return <div style={{ color: "red" }}>{props.children}</div>;
+  }
+
+  renderServerError = () => {
+    return (
+      <Menu.Item>
+        <Message negative>
+          <Message.Header>Oops!</Message.Header>
+          <p>{this.state.errorMessage}</p>
+        </Message>
+      </Menu.Item>
+    );
   }
 
   renderForm = ({ errors, status, touched, isSubmitting }) => {
@@ -90,10 +110,11 @@ class SearchRouteForm extends Component {
         </Menu.Item>
 
         <Menu.Item>
-          <Button type="submit" disabled={isSubmitting} >
+          <Button type="submit" disabled={isSubmitting || this.state.disableButton} loading={this.state.disableButton} >
             Submit
           </Button>
         </Menu.Item>
+        {this.state.errorMessage && this.renderServerError()}
 
       </Form>
     );

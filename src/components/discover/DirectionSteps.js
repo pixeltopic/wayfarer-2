@@ -4,6 +4,15 @@ import { Icon, Item, Tab } from "semantic-ui-react";
 
 class DirectionSteps extends Component {
 
+  state = { activeIndex: 0 };
+
+  componentDidUpdate() {
+    if (this.state.activeIndex !== 0 && this.state.activeIndex > this.props.routes.length-1) {
+      // console.log(`activeIndex: ${this.state.activeIndex}`)
+      this.setState({ activeIndex: 0 });
+    }
+  }
+
   renderSteps = () => {
     const routeSteps = this.props.routes.map((route) => {
       const stepArray = route["legs"]["0"]["steps"].map((step, key) => {
@@ -29,20 +38,30 @@ class DirectionSteps extends Component {
     return routeSteps;
   }
 
+  handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex });
+
   renderTabs = () => {
     const routesSteps = this.renderSteps();
 
     const panes = routesSteps.map((routeContents, routeNum) => {
-      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane attached={false}><Item.Group divided>{routeContents}</Item.Group></Tab.Pane>}
+      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane attached={false}><Item.Group divided>{routeContents}</Item.Group></Tab.Pane>};
     })
 
-    return <Tab menu={{ pointing: true }} panes={panes} />
+    return (
+      <Tab 
+        menu={{ pointing: true }} 
+        activeIndex={this.state.activeIndex}
+        onTabChange={this.handleTabChange} 
+        panes={panes} 
+      />
+    );
   }
 
   render() {
     if (!this.props.routes) {
       return null;
     }
+    console.log("Component re-rendered");
     return (
       <div>
         

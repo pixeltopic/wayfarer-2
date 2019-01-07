@@ -3,7 +3,7 @@ import { updateToken } from "./authActions";
 
 import { FETCH_INCIDENTS } from "./types";
 
-export const fetchIncidents = () => async (dispatch, getState) => {
+export const fetchIncidents = (callback=null) => async (dispatch, getState) => {
   try {
     console.log("fetched Incidents");
 
@@ -20,6 +20,8 @@ export const fetchIncidents = () => async (dispatch, getState) => {
     dispatch({ type: FETCH_INCIDENTS, payload: response.data });
     dispatch(updateToken(response));
 
+    if (callback) callback();
+    
   } catch(e) {
     console.log(e);
   }

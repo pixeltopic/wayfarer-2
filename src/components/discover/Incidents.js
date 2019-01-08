@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Item, Tab } from "semantic-ui-react";
+import { Item, Tab, Message } from "semantic-ui-react";
 import _ from "lodash";
 
 import { fetchIncidents } from "../../actions";
+import { IncidentTypeLabel, IncidentSeverityLabel, ImpactingLabel } from "../helpers/IncidentLabels";
 
 class Incidents extends Component {
   // note: this component should only be rendered after this.props.maps.routes is not null/empty
@@ -37,18 +38,23 @@ class Incidents extends Component {
 
   handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex });
 
+  noIncidentMessage = () => (
+    <Message info>
+      <Message.Header>No incidents were found on this route.</Message.Header>
+    </Message>
+  );
+
   renderIncidents = () => {
     const panes = _.map(this.props.incidents, (route, routeNum) => {
       const paneData = route.map((incident, key) => {
-        const { shortDesc, /*type, severity, impacting*/ } = incident;
+        const { shortDesc, type, severity, impacting } = incident;
         return (
           <Item key={key}>
             <Item.Content>
               <Item.Header as="h4">{shortDesc}
               </Item.Header>
               <Item.Extra>
-                {/* <Icon color="teal" name="time" />{step.duration.text}{" "}
-                <Icon color="teal" name="road" />{step.distance.text} */}
+                <IncidentTypeLabel num={type} /><IncidentSeverityLabel num={severity}/><ImpactingLabel bool={impacting} />
               </Item.Extra>
             </Item.Content>
           </Item>
@@ -57,7 +63,7 @@ class Incidents extends Component {
       if (paneData.length !== 0)
         return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><Item.Group divided>{paneData}</Item.Group></Tab.Pane>};
       else
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}>No incidents to look out for!</Tab.Pane> };
+        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}>{this.noIncidentMessage()}</Tab.Pane> };
     });
 
     const initialPanes = this.props.routes.map((route, routeNum) => {

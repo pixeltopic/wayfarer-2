@@ -5,6 +5,7 @@ import { Grid, Menu, Container } from "semantic-ui-react";
 import SearchRouteForm from "./SearchRouteForm";
 import DirectionSteps from "./DirectionSteps";
 import Incidents from "./Incidents";
+import SearchPlaceholder from "./SearchPlaceholder";
 
 class Discover extends Component {
 
@@ -15,9 +16,21 @@ class Discover extends Component {
   renderBody() {
     switch(this.state.activeItem) {
       case "directions":
-        return <DirectionSteps />;
+        if (this.props.routes === undefined) {
+          return <SearchPlaceholder />;
+        } else if (this.props.routes.length === 0) {
+          return <SearchPlaceholder error />;
+        } else {
+          return <DirectionSteps />;
+        }  
       case "incidents":
-        return <Incidents />;
+        if (this.props.routes === undefined) {
+          return <SearchPlaceholder />;
+        } else if (this.props.routes.length === 0) {
+          return <SearchPlaceholder error />;
+        } else {
+          return <Incidents />;
+        }  
       default:
         return null;
     }

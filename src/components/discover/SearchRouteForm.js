@@ -19,7 +19,7 @@ class SearchRouteForm extends Component {
   state = { disableButton: false, errorMessage: "" };
 
   onSubmit = (values, actions) => {
-    console.log(values);
+    // console.log(values);
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchDirections(

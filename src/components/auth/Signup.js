@@ -20,7 +20,7 @@ class Signup extends Component {
 
   onSubmit = (values, actions) => {
     this.setState({ disableButton: true});
-    console.log(values);
+    // console.log(values);
 
     this.props.signup(
       values, 

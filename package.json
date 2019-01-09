@@ -5,6 +5,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "formik": "^1.4.1",
+    "geolib": "^2.0.24",
+    "google-map-react": "^1.1.2",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "react": "^16.7.0",

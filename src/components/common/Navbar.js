@@ -52,7 +52,7 @@ class Navbar extends Component {
       <Menu inverted borderless stackable style={{ marginBottom: "0px", borderRadius: "0px" }}>
         
           <Menu.Item header>
-            <Link to={routes.HOME} >Wayfarer 2</Link>
+            <Link to={routes.HOME} >The Wayfarer</Link>
           </Menu.Item>
           {this.renderLinks()}
         

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Icon, Item, Tab } from "semantic-ui-react";
 
+import RenderGoogleMap from "../common/GoogleMap/RenderGoogleMap";
+
 class DirectionSteps extends Component {
 
   state = { activeIndex: 0 };
@@ -14,7 +16,7 @@ class DirectionSteps extends Component {
   }
 
   renderSteps = () => {
-    const routeSteps = this.props.routes.map((route) => {
+    const routeSteps = this.props.routes.map((route, key) => {
       const stepArray = route["legs"]["0"]["steps"].map((step, key) => {
         return (
           <Item key={key}>
@@ -32,7 +34,15 @@ class DirectionSteps extends Component {
           </Item>
         );
       });
-      return stepArray;
+      const polyline = route["overview_polyline"]["points"];
+      return (
+        <React.Fragment>
+          <RenderGoogleMap key={key} markers={polyline} center={route["bounds"]} />
+          <Item.Group divided>{stepArray}</Item.Group>
+
+
+        </React.Fragment>
+      );
     });
 
     return routeSteps;
@@ -41,10 +51,10 @@ class DirectionSteps extends Component {
   handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex });
 
   renderTabs = () => {
-    const routesSteps = this.renderSteps();
+    const routeContents = this.renderSteps();
 
-    const panes = routesSteps.map((routeContents, routeNum) => {
-      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane attached={false}><Item.Group divided>{routeContents}</Item.Group></Tab.Pane>};
+    const panes = routeContents.map((content, routeNum) => {
+      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane attached={false}>{content}</Tab.Pane>};
     })
 
     return (

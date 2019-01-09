@@ -4,7 +4,9 @@ import { Item, Tab, Message } from "semantic-ui-react";
 import _ from "lodash";
 
 import { fetchIncidents } from "../../actions";
-import { IncidentTypeLabel, IncidentSeverityLabel, ImpactingLabel } from "../helpers/IncidentLabels";
+import { ImpactingLabel, IncidentLabel } from "../helpers/IncidentLabels";
+import RenderGoogleMap from "../common/GoogleMap/RenderGoogleMap";
+import Marker from "../common/GoogleMap/Marker";
 
 class Incidents extends Component {
   // note: this component should only be rendered after this.props.maps.routes is not null/empty
@@ -29,9 +31,8 @@ class Incidents extends Component {
     if (this.state.cached !== this.props.routes) {
       this.updateOnRouteChange();
     }
-    console.log(`activeIndex: ${this.state.activeIndex} routes.length: ${this.props.routes.length-1}`);
+    // ensures user is always on a valid active tab (eg disabling alt routes and searching)
     if (this.state.activeIndex !== 0 && this.state.activeIndex > this.props.routes.length-1) {
-      console.log("hit");
       this.setState({ activeIndex: 0 });
     }
   }
@@ -44,26 +45,39 @@ class Incidents extends Component {
     </Message>
   );
 
+  renderIncidentMapMarkers = (incident, key) => {
+    const { shortDesc, type, severity, lat, lng } = incident;
+    return (<Marker key={key} header={shortDesc} popup incidentMarker incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
+  }
+
+  generateIncidentItems = (incident, key) => {
+    const { shortDesc, type, severity, impacting } = incident;
+    return (
+      <Item key={key}>
+        <Item.Content>
+          <Item.Header as="h4">{shortDesc}
+          </Item.Header>
+          <Item.Extra>
+            <IncidentLabel typeNum={type} severityNum={severity}/><ImpactingLabel bool={impacting} />
+          </Item.Extra>
+        </Item.Content>
+      </Item>
+    );
+  }
+
   renderIncidents = () => {
     const panes = _.map(this.props.incidents, (route, routeNum) => {
-      const paneData = route.map((incident, key) => {
-        const { shortDesc, type, severity, impacting } = incident;
-        return (
-          <Item key={key}>
-            <Item.Content>
-              <Item.Header as="h4">{shortDesc}
-              </Item.Header>
-              <Item.Extra>
-                <IncidentTypeLabel num={type} /><IncidentSeverityLabel num={severity}/><ImpactingLabel bool={impacting} />
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-        );
-      });
+      const paneData = route.map(this.generateIncidentItems);
+      const incidentMapMarkers = route.map(this.renderIncidentMapMarkers);
+      const selectedRouteData = this.props.routes[routeNum];
+
+      const polyline = selectedRouteData ? selectedRouteData["overview_polyline"]["points"] : null;
+      const center = selectedRouteData ? selectedRouteData["bounds"] : null;
+
       if (paneData.length !== 0)
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><Item.Group divided>{paneData}</Item.Group></Tab.Pane>};
+        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><RenderGoogleMap key={routeNum} polyline={polyline} center={center}>{incidentMapMarkers}</RenderGoogleMap><Item.Group divided>{paneData}</Item.Group></Tab.Pane>};
       else
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}>{this.noIncidentMessage()}</Tab.Pane> };
+        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><RenderGoogleMap key={routeNum} polyline={polyline} center={center} />{this.noIncidentMessage()}</Tab.Pane> };
     });
 
     const initialPanes = this.props.routes.map((route, routeNum) => {

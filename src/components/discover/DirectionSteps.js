@@ -37,10 +37,8 @@ class DirectionSteps extends Component {
       const polyline = route["overview_polyline"]["points"];
       return (
         <React.Fragment>
-          <RenderGoogleMap key={key} markers={polyline} center={route["bounds"]} />
+          <RenderGoogleMap key={key} polyline={polyline} center={route["bounds"]} />
           <Item.Group divided>{stepArray}</Item.Group>
-
-
         </React.Fragment>
       );
     });

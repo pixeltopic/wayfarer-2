@@ -2,7 +2,7 @@ import { getCenter, useDecimal } from "geolib";
 
 const decodePolyline = (encoded) => {
   // credits: https://gist.github.com/ismaels/6636986
-  // array that holds the points
+  // array that holds all lat lng pairs decoded from the polyline.
   let points=[];
   let index = 0, len = encoded.length;
   let lat = 0, lng = 0;
@@ -30,7 +30,7 @@ const decodePolyline = (encoded) => {
 }
 
 const calcCenterWithBounds = (bounds) => {
-  // given a route's bounds from this.props.directionData, return center of bounding box.
+  // given a route's bounds from the `maps` redux state, return center of bounding box.
   const center = getCenter(
       {
           northeast: { latitude: bounds.northeast.lat, longitude: bounds.northeast.lng }, 

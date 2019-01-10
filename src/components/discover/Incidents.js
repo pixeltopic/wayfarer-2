@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Item, Tab, Message } from "semantic-ui-react";
+import { Item, Tab, Message, Icon, Menu } from "semantic-ui-react";
 import _ from "lodash";
 
 import { fetchIncidents } from "../../actions";
@@ -11,7 +11,7 @@ import Marker from "../common/GoogleMap/Marker";
 class Incidents extends Component {
   // note: this component should only be rendered after this.props.maps.routes is not null/empty
 
-  state = { cached: null, loading: false, activeIndex: 0 };
+  state = { cached: null, loading: false, activeIndex: 0, showConstruction: true, showEvents: true, showCongestion: true, showIncidents: true };
 
   updateOnRouteChange = () => {
     // whenever the data in this.props.routes changes, function is called to show necessary loading screen and updated data
@@ -47,7 +47,47 @@ class Incidents extends Component {
 
   renderIncidentMapMarkers = (incident, key) => {
     const { shortDesc, type, severity, lat, lng } = incident;
-    return (<Marker key={key} header={shortDesc} popup incidentMarker incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
+    if (type === 1 && !this.state.showConstruction) {
+      return null;
+    } else if (type === 2 && !this.state.showEvents) {
+      return null;
+    } else if (type === 3 && !this.state.showCongestion) {
+      return null;
+    } else if (type === 4 && !this.state.showIncidents) {
+      return null;
+    } else {
+      return (<Marker key={key} header={shortDesc} popup incidentMarker incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
+    }
+  }
+
+  toggleMarkerViews = () => {
+    return (
+      <Menu>
+        <Menu.Item 
+          active={this.state.showConstruction} 
+          onClick={() => this.setState({ showConstruction: !this.state.showConstruction })}>
+          <Icon name="cog" />
+        </Menu.Item>
+        <Menu.Item
+          active={this.state.showEvents}
+          onClick={() => this.setState({ showEvents: !this.state.showEvents })}
+        >
+          <Icon name="map pin" />
+        </Menu.Item>
+        <Menu.Item
+          active={this.state.showCongestion}
+          onClick={() => this.setState({ showCongestion: !this.state.showCongestion })}
+        >
+          <Icon name="clock" />
+        </Menu.Item>
+        <Menu.Item
+          active={this.state.showIncidents}
+          onClick={() => this.setState({ showIncidents: !this.state.showIncidents })}
+        >
+          <Icon name="exclamation circle" />
+        </Menu.Item>
+      </Menu>
+    );
   }
 
   generateIncidentItems = (incident, key) => {
@@ -75,7 +115,27 @@ class Incidents extends Component {
       const center = selectedRouteData ? selectedRouteData["bounds"] : null;
 
       if (paneData.length !== 0)
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><RenderGoogleMap key={routeNum} polyline={polyline} center={center}>{incidentMapMarkers}</RenderGoogleMap><Item.Group divided>{paneData}</Item.Group></Tab.Pane>};
+        return { 
+          menuItem: `Route ${Number(routeNum)+1}`, 
+          render: () => (
+            <Tab.Pane 
+              loading={this.state.loading} 
+              attached={false}
+            >
+              <RenderGoogleMap 
+                key={routeNum} 
+                polyline={polyline} 
+                center={center}
+              >
+                {incidentMapMarkers}
+              </RenderGoogleMap>
+              {this.toggleMarkerViews()}
+              <Item.Group divided>
+                {paneData}
+              </Item.Group>
+            </Tab.Pane>
+          )
+        };
       else
         return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><RenderGoogleMap key={routeNum} polyline={polyline} center={center} />{this.noIncidentMessage()}</Tab.Pane> };
     });
@@ -95,7 +155,7 @@ class Incidents extends Component {
   }
 
   render() {
-    console.log(this.props.incidents);
+    // console.log(this.props.incidents);
     if (!this.props.routes) {
       return null;
     }

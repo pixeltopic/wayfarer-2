@@ -85,7 +85,7 @@ class Signin extends Component {
     return (
       <React.Fragment>
         <MediaQuery minWidth={700}>
-          <div style={{ width: "50%", margin: "auto", padding: "70px 0" }}>
+          <div style={{ width: "450px", margin: "auto", padding: "70px 0" }}>
             {this.renderForm(props)}
           </div>
         </MediaQuery>

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { Router, Route } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import thunk from 'redux-thunk';
 
 import App from "./components/App";
@@ -16,6 +16,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Signup from "./components/auth/Signup";
 import Signin from "./components/auth/Signin";
 import Signout from "./components/auth/Signout";
+import NotFound from "./components/common/NotFound";
 
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\client
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
@@ -45,12 +46,15 @@ ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
       <App>
-        <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
-        <Route path={routes.SIGNIN} exact component={Signin} />
-        <Route path={routes.SIGNUP} exact component={Signup} />
-        <Route path={routes.SIGNOUT} exact component={Signout} />
-        <Route path={routes.DISCOVER} exact component={Discover} />
-        <Route path={routes.DASHBOARD} exact component={Dashboard} />
+        <Switch>
+          <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
+          <Route path={routes.SIGNIN} exact component={Signin} />
+          <Route path={routes.SIGNUP} exact component={Signup} />
+          <Route path={routes.SIGNOUT} exact component={Signout} />
+          <Route path={routes.DISCOVER} exact component={Discover} />
+          <Route path={routes.DASHBOARD} exact component={Dashboard} />
+          <Route component={NotFound} />
+        </Switch>
       </App>
     </Router>
   </Provider>,

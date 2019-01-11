@@ -4,3 +4,5 @@ export const AUTH_USER = "auth_user";
 
 export const FETCH_DIRECTIONS = "fetch_directions";
 export const FETCH_INCIDENTS = "fetch_incidents";
+
+export const FORM_CACHE = "form_cache";

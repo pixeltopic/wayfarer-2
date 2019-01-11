@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Grid, Menu, Container } from "semantic-ui-react";
 
 import SearchRouteForm from "./SearchRouteForm";
+import SearchPlaceForm from "./SearchPlaceForm";
 import DirectionSteps from "./DirectionSteps";
 import Incidents from "./Incidents";
 import SearchPlaceholder from "./SearchPlaceholder";
@@ -58,7 +59,7 @@ class Discover extends Component {
           <Menu.Item 
             name="directions"
             active={this.state.activeItem === "directions"}
-            disabled={!this.props.routes}
+            // disabled={!this.props.routes}
             onClick={this.handleItemClick}
           >
             Directions
@@ -74,7 +75,7 @@ class Discover extends Component {
           <Menu.Item 
             name="places"
             active={this.state.activeItem === "places"}
-            disabled={!this.props.routes}
+            // disabled={!this.props.routes}
             onClick={this.handleItemClick}
           >
             Places
@@ -85,7 +86,7 @@ class Discover extends Component {
         </Menu>
         <Grid stackable doubling>
           <Grid.Column width={4}>
-            <SearchRouteForm />
+            {this.state.activeItem === "places" ? <SearchPlaceForm /> : <SearchRouteForm />}
           </Grid.Column>
           <Grid.Column stretched width={12} >
             {this.renderBody()}

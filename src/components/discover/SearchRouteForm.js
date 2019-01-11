@@ -5,7 +5,7 @@ import  { Button, Form as SemForm, Select, Menu, Message } from "semantic-ui-rea
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
-import { fetchDirections } from "../../actions";
+import { fetchDirections, formCache } from "../../actions";
 
 const modeSelect = [
   { value: "driving", text: "Driving" },
@@ -28,6 +28,7 @@ class SearchRouteForm extends Component {
         (payload) => this.setState({ disableButton: false, errorMessage: payload })
       )
     );
+    this.props.formCache(this.props.formName, values); // caches form on submit
     actions.setSubmitting(false);
   }
 
@@ -122,18 +123,22 @@ class SearchRouteForm extends Component {
 
 
   render () {
+    const { cachedFormData } = this.props;
     return(
       <Menu vertical fluid>
         <Formik
           validationSchema={this.validateSchema()}
           validate={this.validateForm}
           initialValues={{ 
-            origin: "", 
-            destination: "", 
-            mode: "", 
-            altRoutes: false, 
-            units: "imperial",
-            avoidTolls: false, avoidHighways: false, avoidFerries: false, avoidIndoor: false 
+            origin: cachedFormData.origin || "", 
+            destination: cachedFormData.destination || "", 
+            mode: cachedFormData.mode || "", 
+            altRoutes: cachedFormData.altRoutes || false, 
+            units: cachedFormData.units || "imperial",
+            avoidTolls: cachedFormData.avoidTolls || false, 
+            avoidHighways: cachedFormData.avoidHighways || false, 
+            avoidFerries: cachedFormData.avoidFerries || false, 
+            avoidIndoor: cachedFormData.avoidIndoor || false 
           }} // later unit preference should be set on acc settings
           onSubmit={this.onSubmit}
           render={this.renderForm} 
@@ -143,4 +148,14 @@ class SearchRouteForm extends Component {
   }
 }
 
-export default connect(null, { fetchDirections })(SearchRouteForm);
+const mapStateToProps = (state, ownProps) => {
+  return { cachedFormData: state.form[ownProps.formName] || {} };
+}
+
+const ConnectedSearchRouteForm = connect(mapStateToProps, { fetchDirections, formCache })(SearchRouteForm);
+
+ConnectedSearchRouteForm.defaultProps = {
+  formName: "SearchRouteForm"
+};
+
+export default ConnectedSearchRouteForm;

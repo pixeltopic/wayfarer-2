@@ -6,6 +6,7 @@ import SearchRouteForm from "./SearchRouteForm";
 import SearchPlaceForm from "./SearchPlaceForm";
 import DirectionSteps from "./DirectionSteps";
 import Incidents from "./Incidents";
+import PlacesResults from "./PlacesResults";
 import SearchPlaceholder from "./SearchPlaceholder";
 import Legend from "./Legend";
 
@@ -53,7 +54,7 @@ class Discover extends Component {
         } else if (this.props.places.length === 0) {
           return <SearchPlaceholder error resultName="places" />;
         } else {
-          return <div>Places found!</div>;
+          return <PlacesResults />;
         }
       default:
         return null;

@@ -56,7 +56,7 @@ class Incidents extends Component {
     } else if (type === 4 && !this.state.showIncidents) {
       return null;
     } else {
-      return (<Marker key={key} header={shortDesc} popup incidentMarker incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
+      return (<Marker key={key} header={shortDesc} popup type="incident" incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
     }
   }
 

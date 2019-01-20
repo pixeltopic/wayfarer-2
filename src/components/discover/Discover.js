@@ -47,6 +47,14 @@ class Discover extends Component {
         } else {
           return <Incidents />;
         }  
+      case "places":
+        if (this.props.places === undefined) {
+          return <SearchPlaceholder />;
+        } else if (this.props.places.length === 0) {
+          return <SearchPlaceholder error resultName="places" />;
+        } else {
+          return <div>Places found!</div>;
+        }
       default:
         return null;
     }
@@ -98,7 +106,7 @@ class Discover extends Component {
 }
 
 const mapStateToProps = state => {
-  return { routes: state.maps.routes };
+  return { routes: state.maps.routes, places: state.places.results };
 }
 
 export default connect(mapStateToProps)(Discover);

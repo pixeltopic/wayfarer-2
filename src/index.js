@@ -11,6 +11,7 @@ import reducers from "./reducers";
 
 import { routes } from "./utils";
 
+import Home from "./components/home/Home";
 import Discover from "./components/discover/Discover";
 import Dashboard from "./components/dashboard/Dashboard";
 import Signup from "./components/auth/Signup";
@@ -47,7 +48,7 @@ ReactDOM.render(
     <Router history={history}>
       <App>
         <Switch>
-          <Route path={routes.HOME} exact component={() => <div>Homepage</div>} />
+          <Route path={routes.HOME} exact component={Home} />
           <Route path={routes.SIGNIN} exact component={Signin} />
           <Route path={routes.SIGNUP} exact component={Signup} />
           <Route path={routes.SIGNOUT} exact component={Signout} />

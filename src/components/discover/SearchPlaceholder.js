@@ -5,7 +5,7 @@ const SearchPlaceholder = (props) => (
   <Segment placeholder>
     <Header icon>
       <Icon name="search" />
-      {props.error ? "No routes found with your search settings." : "To get started, make a search on the left sidebar!" }
+      {props.error ? `No ${props.resultName || "routes"} found with your search settings.` : "To get started, make a search on the left sidebar!" }
     </Header>
   </Segment>
 );

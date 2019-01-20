@@ -5,7 +5,7 @@ import  { Button, Form as SemForm, Select, Menu, Message, Dropdown, Input } from
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
-import { fetchDirections, formCache } from "../../actions";
+import { fetchPlaces, formCache } from "../../actions";
 
 const priceSelect = [
   { value: -1, text: "None" },
@@ -36,15 +36,15 @@ class SearchPlaceForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
-    // this.setState(
-    //   { disableButton: true }, 
-    //   () => this.props.fetchDirections(
-    //     values, 
-    //     () => this.setState({ disableButton: false, errorMessage: "" }),
-    //     (payload) => this.setState({ disableButton: false, errorMessage: payload })
-    //   )
-    // );
-    // this.props.formCache(this.props.formName, values); // caches form on submit
+    this.setState(
+      { disableButton: true }, 
+      () => this.props.fetchPlaces(
+        values, 
+        () => this.setState({ disableButton: false, errorMessage: "" }),
+        (payload) => this.setState({ disableButton: false, errorMessage: payload })
+      )
+    );
+    this.props.formCache(this.props.formName, values); // caches form on submit
     actions.setSubmitting(false);
   }
 
@@ -160,14 +160,14 @@ class SearchPlaceForm extends Component {
           validationSchema={this.validateSchema()}
           validate={this.validateForm}
           initialValues={{ 
-            keyword: cachedFormData.origin || "", 
-            address: cachedFormData.destination || "", 
-            radius: cachedFormData.mode || "0", 
+            keyword: cachedFormData.keyword || "", 
+            address: cachedFormData.address || "", 
+            radius: cachedFormData.radius || "0", 
             units: cachedFormData.units || "imperial",
             type: cachedFormData.type || "",
             minprice: cachedFormData.minprice || -1,
             maxprice: cachedFormData.maxprice || -1
-          }} // later unit preference should be set on acc settings
+          }}
           onSubmit={this.onSubmit}
           render={this.renderForm} 
         />
@@ -180,7 +180,7 @@ const mapStateToProps = (state, ownProps) => {
   return { cachedFormData: state.form[ownProps.formName] || {} };
 }
 
-const ConnectedSearchPlaceForm = connect(mapStateToProps, { fetchDirections, formCache })(SearchPlaceForm);
+const ConnectedSearchPlaceForm = connect(mapStateToProps, { fetchPlaces, formCache })(SearchPlaceForm);
 
 ConnectedSearchPlaceForm.defaultProps = {
   formName: "SearchPlaceForm"

@@ -8,6 +8,21 @@ import { routes } from "../../utils";
 
 class Navbar extends Component {
 
+  state = { onHome: false };
+
+  componentDidMount() {
+    if (this.props.location.pathname ==="/") {
+      this.setState({ onHome: true });
+    }
+    this.props.history.listen((location, action) => {
+      if (location.pathname === "/") {
+        this.setState({ onHome: true });
+      } else {
+        this.setState({ onHome: false });
+      }
+    });
+  }
+
   renderLinks() {
     if (this.props.authenticated) {
       return (
@@ -49,7 +64,7 @@ class Navbar extends Component {
 
   render() {
     return (
-      <Menu inverted borderless stackable style={{ marginBottom: "0px", borderRadius: "0px" }}>
+      <Menu fixed={this.state.onHome ? "top" : null} inverted borderless stackable style={{ marginBottom: "0px", borderRadius: "0px" }}>
         
           <Menu.Item header>
             <Link to={routes.HOME} >The Wayfarer</Link>

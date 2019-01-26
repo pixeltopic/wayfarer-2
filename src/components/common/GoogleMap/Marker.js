@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Icon, Popup, Card, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { formCache, updateActiveDiscover, fetchPlaceDetails } from "../../../actions";
+import { formCache, updateActiveDiscover, fetchPlaceDetails, fetchDirections } from "../../../actions";
 
 class Marker extends Component {
 
@@ -79,6 +79,41 @@ class Marker extends Component {
     );
   }
 
+  onClickPlaceDirections = () => {
+    const searchProps = { 
+      origin: this.props.placeFormData.address || "", 
+      destination: this.props.placeData.vicinity || "", 
+      mode: "driving", 
+      altRoutes: false, 
+      units: "imperial",
+      avoidTolls: false, 
+      avoidHighways: false, 
+      avoidFerries: false, 
+      avoidIndoor: false 
+    }
+    this.props.formCache("SearchRouteForm", searchProps);
+    this.setState(
+      { disablePlaceButton: true }, 
+      () => this.props.fetchDirections(searchProps, () => this.props.updateActiveDiscover("directions"))
+    );
+  }
+
+  placeDirectionsButton = () => {
+    // given a place_id from a place found from Google maps, fetches details from google related to the location.
+    // will also update the active component to show the details. (A callback will be passed intro marker from PlaceResults)
+    
+    return (
+      <Button 
+        basic color='blue' 
+        disabled={this.state.disablePlaceButton || !this.props.placeFormData.address || !this.props.placeData.vicinity} 
+        loading={this.state.disablePlaceButton} 
+        onClick={() => this.onClickPlaceDirections()}
+      >
+        Get Directions
+      </Button>
+    );
+  }
+
   renderPlaceMarker = () => (
     <Popup
         on="click"
@@ -108,9 +143,7 @@ class Marker extends Component {
           </Card.Content>
           <Card.Content extra>
             <div className='ui two buttons'>
-              <Button basic color='blue'>
-                Get Directions
-              </Button>
+              {this.placeDirectionsButton()}
               {this.placeDetailsButton(this.props.placeData.place_id)}
             </div>
           </Card.Content>
@@ -152,7 +185,13 @@ class Marker extends Component {
   }
 }
 
-const ConnectedMarker = connect(null, { formCache, updateActiveDiscover, fetchPlaceDetails })(Marker);
+const mapStateToProps = state => {
+  return {
+    placeFormData: state.form["SearchPlaceForm"] || {}
+  };
+}
+
+const ConnectedMarker = connect(mapStateToProps, { formCache, updateActiveDiscover, fetchPlaceDetails, fetchDirections })(Marker);
 
 ConnectedMarker.defaultProps = {
   popup: false, // only true if enabling popup functionality

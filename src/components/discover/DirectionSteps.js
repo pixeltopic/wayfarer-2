@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Icon, Item, Tab } from "semantic-ui-react";
 
-import RenderGoogleMap from "../common/GoogleMap/RenderGoogleMap";
+import PolylineMap from "../common/GoogleMap/PolylineMap";
 
 class DirectionSteps extends Component {
 
@@ -37,7 +37,7 @@ class DirectionSteps extends Component {
       const polyline = route["overview_polyline"]["points"];
       return (
         <React.Fragment>
-          <RenderGoogleMap key={key} polyline={polyline} center={route["bounds"]} />
+          <PolylineMap key={key} polyline={polyline} center={route["bounds"]} />
           <Item.Group divided>{stepArray}</Item.Group>
         </React.Fragment>
       );

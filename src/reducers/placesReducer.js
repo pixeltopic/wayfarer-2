@@ -1,9 +1,17 @@
-import { FETCH_PLACES } from "../actions/types";
+import { FETCH_PLACES, FETCH_PLACE_DETAILS } from "../actions/types";
 
-export default (state={}, action) => {
+const INITIAL_STATE = {
+  results: [],
+  center: null,
+  placeDetails: null
+};
+
+export default (state=INITIAL_STATE, action) => {
   switch(action.type) {
     case FETCH_PLACES:
-      return { ...action.payload.places };
+      return { ...state, ...action.payload.places };
+    case FETCH_PLACE_DETAILS:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

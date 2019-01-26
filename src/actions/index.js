@@ -3,3 +3,4 @@ export * from "./mapsActions";
 export * from "./incidentsActions";
 export * from "./placesActions";
 export * from "./formActions";
+export * from "./discoverActions";

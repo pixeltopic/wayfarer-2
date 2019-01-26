@@ -5,7 +5,7 @@ import _ from "lodash";
 
 import { fetchIncidents } from "../../actions";
 import { ImpactingLabel, IncidentLabel } from "../helpers/IncidentLabels";
-import RenderGoogleMap from "../common/GoogleMap/RenderGoogleMap";
+import PolylineMap from "../common/GoogleMap/PolylineMap";
 import Marker from "../common/GoogleMap/Marker";
 
 class Incidents extends Component {
@@ -122,13 +122,13 @@ class Incidents extends Component {
               loading={this.state.loading} 
               attached={false}
             >
-              <RenderGoogleMap 
+              <PolylineMap
                 key={routeNum} 
                 polyline={polyline} 
                 center={center}
               >
                 {incidentMapMarkers}
-              </RenderGoogleMap>
+              </PolylineMap>
               {this.toggleMarkerViews()}
               <Item.Group divided>
                 {paneData}
@@ -137,7 +137,7 @@ class Incidents extends Component {
           )
         };
       else
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><RenderGoogleMap key={routeNum} polyline={polyline} center={center} />{this.noIncidentMessage()}</Tab.Pane> };
+        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><PolylineMap key={routeNum} polyline={polyline} center={center} />{this.noIncidentMessage()}</Tab.Pane> };
     });
 
     const initialPanes = this.props.routes.map((route, routeNum) => {

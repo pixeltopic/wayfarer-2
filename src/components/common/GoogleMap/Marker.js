@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { Icon, Popup, Card, Button } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { formCache, updateActiveDiscover, fetchPlaceDetails } from "../../../actions";
 
 class Marker extends Component {
+
+  state = { disablePlaceButton: false };
 
   styleIncident = () => {
     // returns the icon name based on the provided incidentType. (todo: add these icons to labels so they correspond)
@@ -51,6 +55,30 @@ class Marker extends Component {
     />
   );
 
+  onClickPlaceDetails = place_id => {
+    console.log("Place_id:",place_id);
+    this.setState(
+      { disablePlaceButton: true },
+      () => this.props.fetchPlaceDetails(place_id, () => this.props.updateActiveDiscover("placeDetails"))
+    );
+  }
+
+  placeDetailsButton = place_id => {
+    // given a place_id from a place found from Google maps, fetches details from google related to the location.
+    // will also update the active component to show the details. (A callback will be passed intro marker from PlaceResults)
+    
+    return (
+      <Button 
+        basic color='green' 
+        disabled={this.state.disablePlaceButton} 
+        loading={this.state.disablePlaceButton} 
+        onClick={() => this.onClickPlaceDetails(place_id)}
+      >
+        Details
+      </Button>
+    );
+  }
+
   renderPlaceMarker = () => (
     <Popup
         on="click"
@@ -83,9 +111,7 @@ class Marker extends Component {
               <Button basic color='blue'>
                 Get Directions
               </Button>
-              <Button basic color='green'>
-                Details
-              </Button>
+              {this.placeDetailsButton(this.props.placeData.place_id)}
             </div>
           </Card.Content>
         </Popup.Content>
@@ -126,7 +152,9 @@ class Marker extends Component {
   }
 }
 
-Marker.defaultProps = {
+const ConnectedMarker = connect(null, { formCache, updateActiveDiscover, fetchPlaceDetails })(Marker);
+
+ConnectedMarker.defaultProps = {
   popup: false, // only true if enabling popup functionality
   header: null, // popup text
   type: "", // if only true if rendering Incidents onto the map. UPDATE: Must be a string of either "incident" "place" or null/""
@@ -134,4 +162,4 @@ Marker.defaultProps = {
   iconColor: null // custom icon color if not incident marker
 }
 
-export default Marker;
+export default ConnectedMarker;

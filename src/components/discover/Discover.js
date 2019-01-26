@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Grid, Menu, Container } from "semantic-ui-react";
 
+import { updateActiveDiscover } from "../../actions";
 import SearchRouteForm from "./SearchRouteForm";
 import SearchPlaceForm from "./SearchPlaceForm";
 import DirectionSteps from "./DirectionSteps";
 import Incidents from "./Incidents";
 import PlacesResults from "./PlacesResults";
+import PlaceDetails from "./PlaceDetails";
 import SearchPlaceholder from "./SearchPlaceholder";
 import Legend from "./Legend";
 
@@ -26,12 +28,10 @@ const legendData = [
 
 class Discover extends Component {
 
-  state = { activeItem: "directions" };
-
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  handleItemClick = (e, { name }) => this.props.updateActiveDiscover(name);
 
   renderBody() {
-    switch(this.state.activeItem) {
+    switch(this.props.activeItem) {
       case "directions":
         if (this.props.routes === undefined) {
           return <SearchPlaceholder />;
@@ -56,6 +56,8 @@ class Discover extends Component {
         } else {
           return <PlacesResults />;
         }
+      case "placeDetails":
+        return <PlaceDetails />;
       default:
         return null;
     }
@@ -67,7 +69,7 @@ class Discover extends Component {
         <Menu>
           <Menu.Item 
             name="directions"
-            active={this.state.activeItem === "directions"}
+            active={this.props.activeItem === "directions"}
             // disabled={!this.props.routes}
             onClick={this.handleItemClick}
           >
@@ -75,7 +77,7 @@ class Discover extends Component {
           </Menu.Item>
           <Menu.Item 
             name="incidents"
-            active={this.state.activeItem === "incidents"}
+            active={this.props.activeItem === "incidents"}
             disabled={!this.props.routes}
             onClick={this.handleItemClick}
           >
@@ -83,7 +85,7 @@ class Discover extends Component {
           </Menu.Item>
           <Menu.Item 
             name="places"
-            active={this.state.activeItem === "places"}
+            active={this.props.activeItem === "places" || this.props.activeItem === "placeDetails"}
             // disabled={!this.props.routes}
             onClick={this.handleItemClick}
           >
@@ -95,7 +97,7 @@ class Discover extends Component {
         </Menu>
         <Grid stackable doubling>
           <Grid.Column width={4}>
-            {this.state.activeItem === "places" ? <SearchPlaceForm /> : <SearchRouteForm />}
+            {this.props.activeItem === "places" || this.props.activeItem === "placeDetails" ? <SearchPlaceForm /> : <SearchRouteForm />}
           </Grid.Column>
           <Grid.Column stretched width={12} >
             {this.renderBody()}
@@ -107,7 +109,11 @@ class Discover extends Component {
 }
 
 const mapStateToProps = state => {
-  return { routes: state.maps.routes, places: state.places.results };
+  return { 
+    routes: state.maps.routes, 
+    places: state.places.results, 
+    activeItem: state.discover.activeItem 
+  };
 }
 
-export default connect(mapStateToProps)(Discover);
+export default connect(mapStateToProps, { updateActiveDiscover })(Discover);

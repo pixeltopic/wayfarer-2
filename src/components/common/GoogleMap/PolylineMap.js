@@ -4,7 +4,7 @@ import GoogleMap from "google-map-react";
 import Marker from "./Marker";
 import { geolocationUtils } from "../../../utils";
 
-class RenderGoogleMap extends Component {
+class PolylineMap extends Component {
 
   state = { currentPolyline: this.props.polyline };
 
@@ -71,4 +71,4 @@ class RenderGoogleMap extends Component {
 //   zoom: 13
 // };
 
-export default RenderGoogleMap;
+export default PolylineMap;

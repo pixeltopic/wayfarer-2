@@ -14,6 +14,19 @@ const textArray = [
   "Nearest Boba places"
 ];
 
+/* 
+To do:
+Add more options to textArray
+Disable search bar if location is not enabled?
+Alternatively, add a hover popup?
+
+add location services
+
+An incident type from the query endpoint means fetchDirections will need to be called first before redirecting to the discover page with the proper active tab.
+
+Need to figure out how to handle error messages. Perhaps use a red pointing label
+*/
+
 class CallToAction extends Component {
   state = { disableButton: false, errorMessage: "", textIdx: 0 };
 
@@ -44,7 +57,7 @@ class CallToAction extends Component {
 
   validateSchema = () => (
     Yup.object().shape({ 
-      command: Yup.string().min(2, "Too short!").required("Command required."),
+      query: Yup.string().min(2, "Too short!").required("Query required."),
     })
   );
 
@@ -74,7 +87,7 @@ class CallToAction extends Component {
               type="text" 
               size="huge" 
               component={SemForm.Input} 
-              name="command" 
+              name="query" 
               placeholder={textThatChanges} 
               action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton} loading={this.state.disableButton} ></Button>} 
               style={{ width:"50%"}}
@@ -89,7 +102,7 @@ class CallToAction extends Component {
               size="huge"
               fluid
               component={SemForm.Input} 
-              name="command" 
+              name="query" 
               placeholder={textThatChanges} 
               action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton} loading={this.state.disableButton} ></Button>} 
             />
@@ -125,7 +138,7 @@ class CallToAction extends Component {
         <Formik
           validationSchema={this.validateSchema()}
           initialValues={{ 
-            command: cachedFormData.command || "", 
+            query: cachedFormData.query || "", 
           }}
           onSubmit={this.onSubmit}
           render={this.renderForm} 

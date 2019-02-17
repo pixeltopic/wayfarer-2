@@ -3,7 +3,7 @@ import { updateToken } from "./authActions";
 
 import { FETCH_DIRECTIONS } from "./types";
 
-export const fetchDirections = (searchProps, callback=null, callbackError=null) => async (dispatch, getState) => {
+export const fetchDirections = (searchProps, callbackFinal=null, callbackError=null, callbackInitial=null) => async (dispatch, getState) => {
   // fetches directions from google maps api. Sends current JWT if user is logged in for possible refresh.
   try {
 
@@ -13,10 +13,12 @@ export const fetchDirections = (searchProps, callback=null, callbackError=null) 
     
     const response = await server.post("/api/fetchdirections", searchProps, getState().auth.authenticated ? config : null);
 
+    if (callbackInitial) callbackInitial();
+    
     dispatch({ type: FETCH_DIRECTIONS, payload: response.data });
     dispatch(updateToken(response));
 
-    if (callback) callback();
+    if (callbackFinal) callbackFinal();
 
   } catch(e) {
     console.log(e);

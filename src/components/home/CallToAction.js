@@ -1,26 +1,26 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form } from "formik";
-import  { Button, Form as SemForm, Message, Header } from "semantic-ui-react";
+import  { Button, Form as SemForm, Message, Header, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
 import SemField from "../helpers/SemanticField";
 import { formCache } from "../../actions";
 
+import "./basiclabel.css";
+
 const textArray = [
   "Events at Staples Center, LA",
   "Directions from Irvine to Anaheim",
-  "Nearest Boba places"
+  "Nearest Boba places",
+  "Sharetea within 3 miles",
+  "Route from Riverside to Montebello"
 ];
 
 /* 
 To do:
 Add more options to textArray
-Disable search bar if location is not enabled?
-Alternatively, add a hover popup?
-
-add location services
 
 An incident type from the query endpoint means fetchDirections will need to be called first before redirecting to the discover page with the proper active tab.
 
@@ -28,13 +28,17 @@ Need to figure out how to handle error messages. Perhaps use a red pointing labe
 */
 
 class CallToAction extends Component {
-  state = { disableButton: false, errorMessage: "", textIdx: 0 };
+  state = { disableButton: false, locationEnabled: false, errorMessage: "", textIdx: 0, lat: null, lng: null };
 
   componentDidMount() {
     this.timeout = setInterval(() => {
       let currentIdx = this.state.textIdx;
       this.setState({ textIdx: currentIdx + 1 });
     }, 1500);
+    window.navigator.geolocation.getCurrentPosition(
+      pos => this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude, locationEnabled: true }),
+      err => this.setState({ errorMessage: err.message, locationEnabled: false })
+    );
   }
 
   componentWillUnmount() {
@@ -42,7 +46,8 @@ class CallToAction extends Component {
   }
 
   onSubmit = (values, actions) => {
-    console.log(values);
+    const queryProps = { ...values, currentLocation: { lat: this.state.lat, lng: this.state.lng }};
+    console.log(queryProps);
     // this.setState(
     //   { disableButton: true }, 
     //   () => this.props.fetchDirections(
@@ -89,9 +94,10 @@ class CallToAction extends Component {
               component={SemForm.Input} 
               name="query" 
               placeholder={textThatChanges} 
-              action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton} loading={this.state.disableButton} ></Button>} 
+              action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton || !this.state.locationEnabled} loading={this.state.disableButton} ></Button>} 
               style={{ width:"50%"}}
             />
+            {!this.state.locationEnabled && <Label color='teal' size="large" className="calltoaction" basic pointing>Enable location in your browser settings to start searching!</Label>}
             {/* <ErrorMessage name="command" component={this.renderError} /> */}
           </SemForm.Group>
         </MediaQuery>
@@ -104,8 +110,9 @@ class CallToAction extends Component {
               component={SemForm.Input} 
               name="query" 
               placeholder={textThatChanges} 
-              action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton} loading={this.state.disableButton} ></Button>} 
+              action={<Button primary icon="search" type="submit" disabled={isSubmitting || this.state.disableButton || !this.state.locationEnabled} loading={this.state.disableButton} ></Button>} 
             />
+            {!this.state.locationEnabled && <Label color='teal' size="large" className="calltoaction" basic pointing>Enable location to start searching!</Label>}
             {/* <ErrorMessage name="command" component={this.renderError} /> */}
           </SemForm.Group>
         </MediaQuery>

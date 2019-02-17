@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Select, Menu, Message } from "semantic-ui-react";
+import  { Button, Form as SemForm, Select, Menu, Message, Input, Dropdown } from "semantic-ui-react";
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
@@ -19,16 +19,17 @@ class SearchRouteForm extends Component {
   state = { disableButton: false, errorMessage: "" };
 
   onSubmit = (values, actions) => {
-    // console.log(values);
+    console.log(values);
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchDirections(
         values, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
-        (payload) => this.setState({ disableButton: false, errorMessage: payload })
+        (payload) => this.setState({ disableButton: false, errorMessage: payload }),
+        () => this.props.formCache(this.props.formName, values)
       )
     );
-    this.props.formCache(this.props.formName, values); // caches form on submit
+    // this.props.formCache(this.props.formName, values); // caches form on submit
     actions.setSubmitting(false);
   }
 
@@ -42,6 +43,15 @@ class SearchRouteForm extends Component {
 
   validateForm = (values) => {
     const errors = {};
+    if (this.props.activeItem === "incidents" && values.units === "metric" && values.radius > 24) {
+      errors.radius = "Max radius is 24 kilometers.";
+    }
+    if (this.props.activeItem === "incidents" && values.units === "imperial" && values.radius > 15) {
+      errors.radius = "Max radius is 15 miles.";
+    }
+    if (this.props.activeItem === "incidents" && values.radius !== null && values.radius <= 0) {
+      errors.radius = "Radius must be greater than 0!"
+    }
     if (values.mode !== "walking" && values.avoidIndoor) {
       errors.mode = "You can only avoid indoor routes if you are walking.";
     }
@@ -65,7 +75,7 @@ class SearchRouteForm extends Component {
     );
   }
 
-  renderForm = ({ errors, status, touched, isSubmitting }) => {
+  renderForm = ({ errors, status, touched, isSubmitting, values }) => {
     return (
       <Form autoComplete="off" >
 
@@ -99,6 +109,23 @@ class SearchRouteForm extends Component {
           <Menu.Header>Unit Display</Menu.Header>
           <SemField name="units" fluid component={Select} options={[{ value: "imperial", text: "Imperial"}, { value: "metric", text: "Metric"}]} placeholder="Units" />
         </Menu.Item>
+
+        { this.props.activeItem === "incidents" &&
+        <Menu.Item>
+          <Menu.Header>Incidents within</Menu.Header>
+          <SemForm.Group>
+            <SemField 
+              type="number" 
+              fluid
+              component={Input}
+              label={<SemField name="units" component={Dropdown} options={[{ value: "imperial", text: "mi"}, { value: "metric", text: "km"}]}/>}
+              labelPosition="right"
+              name="radius" 
+              placeholder="10" 
+            />
+            <ErrorMessage name="radius" component={this.renderError} />
+          </SemForm.Group>
+        </Menu.Item> }
 
         <Menu.Item>
           <Menu.Header>Avoid</Menu.Header>
@@ -135,6 +162,7 @@ class SearchRouteForm extends Component {
             mode: cachedFormData.mode || "", 
             altRoutes: cachedFormData.altRoutes || false, 
             units: cachedFormData.units || "imperial",
+            radius: cachedFormData.radius || null,
             avoidTolls: cachedFormData.avoidTolls || false, 
             avoidHighways: cachedFormData.avoidHighways || false, 
             avoidFerries: cachedFormData.avoidFerries || false, 
@@ -149,7 +177,10 @@ class SearchRouteForm extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return { cachedFormData: state.form[ownProps.formName] || {} };
+  return { 
+    cachedFormData: state.form[ownProps.formName] || {}, 
+    activeItem: state.discover.activeItem 
+  };
 }
 
 const ConnectedSearchRouteForm = connect(mapStateToProps, { fetchDirections, formCache })(SearchRouteForm);

@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form } from "formik";
-import  { Button, Form as SemForm, Message, Header, Label } from "semantic-ui-react";
+import  { Button, Form as SemForm, Header, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
 import SemField from "../helpers/SemanticField";
-import { formCache } from "../../actions";
+import { formCache, processQuery } from "../../actions";
+import history from "../../history";
+import { routes } from "../../utils";
 
 import "./basiclabel.css";
 
@@ -48,14 +50,14 @@ class CallToAction extends Component {
   onSubmit = (values, actions) => {
     const queryProps = { ...values, currentLocation: { lat: this.state.lat, lng: this.state.lng }};
     console.log(queryProps);
-    // this.setState(
-    //   { disableButton: true }, 
-    //   () => this.props.fetchDirections(
-    //     values, 
-    //     () => this.setState({ disableButton: false, errorMessage: "" }),
-    //     (payload) => this.setState({ disableButton: false, errorMessage: payload })
-    //   )
-    // );
+    this.setState(
+      { disableButton: true }, 
+      () => this.props.processQuery(
+        queryProps, 
+        () => history.push(routes.DISCOVER),
+        (payload) => this.setState({ disableButton: false, errorMessage: payload })
+      )
+    );
     // this.props.formCache(this.props.formName, values); // caches form on submit
     actions.setSubmitting(false);
   }
@@ -73,12 +75,7 @@ class CallToAction extends Component {
 
   renderServerError = () => {
     return (
-      
-        <Message negative>
-          <Message.Header>Oops!</Message.Header>
-          <p>{this.state.errorMessage}</p>
-        </Message>
-  
+        <Label color="red" size="large" className="calltoaction" basic pointing>{this.state.errorMessage}</Label>
     );
   }
 
@@ -159,7 +156,7 @@ const mapStateToProps = (state, ownProps) => {
   return { cachedFormData: state.form[ownProps.formName] || {} };
 }
 
-const ConnectedCallToAction = connect(mapStateToProps, { formCache })(CallToAction);
+const ConnectedCallToAction = connect(mapStateToProps, { formCache, processQuery })(CallToAction);
 
 ConnectedCallToAction.defaultProps = {
   formName: "CallToAction"

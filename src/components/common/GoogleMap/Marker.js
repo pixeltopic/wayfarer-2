@@ -122,7 +122,7 @@ class Marker extends Component {
         trigger={
           <Icon 
             name={this.props.iconName || "star"} 
-            color={"olive" || null} 
+            color={this.props.iconColor || "olive"} 
             circular size="big"
             inverted
           />
@@ -135,7 +135,8 @@ class Marker extends Component {
             <Card.Meta>Rating: {this.props.placeData.rating}/5 based on {this.props.placeData.user_ratings_total} user ratings.</Card.Meta>
             <Card.Description>
               <p>
-                <Icon name="calendar outline" color="olive" />{this.props.placeData.opening_hours.open_now ? "Open Now" : "Closed" }
+                <Icon name="calendar outline" color="olive" />
+                {this.props.placeData.opening_hours ? (this.props.placeData.opening_hours.open_now ? "Open Now" : "Closed") : "No opening hour data found" }
               </p>
               <p>
                 <Icon name="map marker" color="red" />{this.props.placeData.vicinity}

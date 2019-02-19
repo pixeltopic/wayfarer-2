@@ -32,6 +32,12 @@ export const fetchPlaceDetails = (place_id, callback=null, callbackError=null) =
       headers : { authorization: getState().auth.authenticated }  
     };
 
+    if (place_id === getState().places.cachedPlaceDetailsId) {
+      console.log("Memoized place details loaded");
+      if (callback) callback();
+      return;
+    }
+
     const response = await server.post("/api/fetchplacedetails", { place_id }, getState().auth.authenticated ? config : null);
 
     dispatch({ type: FETCH_PLACE_DETAILS, payload: response.data });

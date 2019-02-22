@@ -49,7 +49,7 @@ class Discover extends Component {
           return <Incidents />;
         }  
       case "places":
-        if (this.props.places === undefined) {
+        if (this.props.places.length === 0) {
           return <SearchPlaceholder />;
         } else if (this.props.places.length === 0) {
           return <SearchPlaceholder error resultName="places" />;

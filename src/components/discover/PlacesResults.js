@@ -2,13 +2,22 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Segment, Card, Divider, Button, Icon } from "semantic-ui-react";
 
-import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache } from "../../actions";
+import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../actions";
 import BasicMap from "../common/GoogleMap/BasicMap";
 import Marker from "../common/GoogleMap/Marker";
 
 class PlacesResults extends Component {
 
-  state = { highlighted: "", disablePlaceButton: false };
+  state = { highlighted: "", disablePlaceButton: false, activePage: 0, maxPages: this.props.places.length, disableNextButton: false };
+
+  componentDidUpdate() {
+    if (this.state.maxPages !== this.props.places.length) {
+      this.setState({ 
+        maxPages: this.props.places.length, 
+        activePage: this.state.activePage < this.props.places.length ? this.state.activePage : 0 
+      });
+    }
+  }
 
   onClickPlaceDetails = place_id => {
     console.log("Place_id:",place_id);
@@ -70,7 +79,7 @@ class PlacesResults extends Component {
 
   renderPlacesAsCards = () => {
 
-    const cards = this.props.places.map((place, key) => {
+    const cards = this.props.places[this.state.activePage].map((place, key) => {
       return (
         <Card key={key}>
           <Card.Content>
@@ -102,7 +111,7 @@ class PlacesResults extends Component {
   }
 
   placesAsMarkers = () => {
-    const markers = this.props.places.map((place, key) => {
+    const markers = this.props.places[this.state.activePage].map((place, key) => {
       const { lat, lng } = place.geometry.location;
       return <Marker key={key} popup type="place" iconColor={this.state.highlighted === place.id ? "orange" : null} iconName="map marker alternate" lat={lat} lng={lng} placeData={place} />
     });
@@ -116,13 +125,28 @@ class PlacesResults extends Component {
       <Segment>
         <BasicMap center={this.props.center}>
           
-          { this.props.center && this.placesAsMarkers()}
+          { this.props.center && this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.placesAsMarkers()}
           
         </BasicMap>
         <Divider hidden />
         <Card.Group centered doubling itemsPerRow={2}>
-            {this.renderPlacesAsCards()}
+            {this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.renderPlacesAsCards()}
         </Card.Group>
+
+        <Divider hidden />
+        <Button disabled={this.state.activePage === 0} onClick={() => this.setState({ activePage: this.state.activePage - 1 })}>
+          Previous
+        </Button>
+        <Button 
+          floated="right" 
+          disabled={(!this.props.nextPageToken && this.state.maxPages-1 === this.state.activePage) || this.state.disableNextButton}
+          loading={this.state.disableNextButton}
+          onClick={() => this.setState(
+            { disableNextButton: true }, 
+            () => this.props.fetchMorePlaces(() => this.setState({ disableNextButton: false, activePage: this.state.activePage + 1 })))}
+        >
+          Next
+        </Button>
       </Segment>
     );
   }
@@ -131,9 +155,10 @@ class PlacesResults extends Component {
 const mapStateToProps = (state) => {
   return { 
     places: state.places.results, 
+    nextPageToken: state.places.next_page_token,
     center: state.places.center,
     placeFormData: state.form["SearchPlaceForm"] || {}
   };
 }
 
-export default connect(mapStateToProps, { fetchDirections, fetchPlaceDetails, updateActiveDiscover, formCache })(PlacesResults);
+export default connect(mapStateToProps, { fetchDirections, fetchPlaceDetails, updateActiveDiscover, formCache, fetchMorePlaces })(PlacesResults);

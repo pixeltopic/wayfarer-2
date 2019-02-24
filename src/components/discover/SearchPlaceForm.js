@@ -9,7 +9,6 @@ import { fetchPlaces, formCache } from "../../actions";
 
 const priceSelect = [
   { value: -1, text: "None" },
-  { value: 0, text: "Free" },
   { value: 1, text: "Inexpensive" },
   { value: 2, text: "Moderate" },
   { value: 3, text: "Expensive" },

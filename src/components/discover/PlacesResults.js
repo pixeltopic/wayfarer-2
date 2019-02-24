@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Segment, Card, Divider, Button, Icon } from "semantic-ui-react";
+import { getDistance } from "geolib";
+import _ from "lodash";
 
 import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../actions";
 import BasicMap from "../common/GoogleMap/BasicMap";
 import Marker from "../common/GoogleMap/Marker";
+import PlacesResultsFilter from "./PlacesResultsFilter";
 
 class PlacesResults extends Component {
 
@@ -16,6 +19,37 @@ class PlacesResults extends Component {
         maxPages: this.props.places.length, 
         activePage: this.state.activePage < this.props.places.length ? this.state.activePage : 0 
       });
+    }
+  }
+
+  filterCurrentPage = () => {
+    // filters by ascending order if distance, descending order if place rating. name does not reorder.
+    if (_.isEmpty(this.props.filterFormProps) || (!this.props.filterFormProps.keyword && !this.props.filterFormProps.attribute)) {
+      return this.props.places[this.state.activePage];
+    }
+
+    const { keyword, attribute } = this.props.filterFormProps;
+    const center =  this.props.center;
+    let filteredArr;
+    
+    if (keyword && keyword.toString().replace(/ /g,"").length !== 0) {
+      filteredArr = this.props.places[this.state.activePage].filter(place => place.name.toString().toLowerCase().includes(keyword.toString().toLowerCase()));
+    } else {
+      filteredArr = [...this.props.places[this.state.activePage]]
+    }
+
+    if (attribute === "distance") {
+      return filteredArr.sort(
+        (placeA, placeB) => {
+          let distanceAwayA = getDistance(center, { lat: placeA.geometry.location.lat, lng: placeA.geometry.location.lng });
+          let distanceAwayB = getDistance(center, { lat: placeB.geometry.location.lat, lng: placeB.geometry.location.lng });
+          return distanceAwayA - distanceAwayB;
+        }
+      );
+    } else if (attribute === "rating") {
+      return filteredArr.sort((placeA, placeB) => (placeB.rating ? placeB.rating : 0) - (placeA.rating ? placeA.rating : 0));
+    } else {
+      return filteredArr;
     }
   }
 
@@ -79,7 +113,7 @@ class PlacesResults extends Component {
 
   renderPlacesAsCards = () => {
 
-    const cards = this.props.places[this.state.activePage].map((place, key) => {
+    const cards = this.filterCurrentPage().map((place, key) => {
       return (
         <Card key={key}>
           <Card.Content>
@@ -111,7 +145,7 @@ class PlacesResults extends Component {
   }
 
   placesAsMarkers = () => {
-    const markers = this.props.places[this.state.activePage].map((place, key) => {
+    const markers = this.filterCurrentPage().map((place, key) => {
       const { lat, lng } = place.geometry.location;
       return <Marker key={key} popup type="place" iconColor={this.state.highlighted === place.id ? "orange" : null} iconName="map marker alternate" lat={lat} lng={lng} placeData={place} />
     });
@@ -123,12 +157,11 @@ class PlacesResults extends Component {
   render() {
     return (
       <Segment>
-        <BasicMap center={this.props.center}>
-          
-          { this.props.center && this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.placesAsMarkers()}
-          
+        <BasicMap center={this.props.center}>      
+          {this.props.center && this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.placesAsMarkers()}
         </BasicMap>
         <Divider hidden />
+        <PlacesResultsFilter />
         <Card.Group centered doubling itemsPerRow={2}>
             {this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.renderPlacesAsCards()}
         </Card.Group>
@@ -157,7 +190,8 @@ const mapStateToProps = (state) => {
     places: state.places.results, 
     nextPageToken: state.places.next_page_token,
     center: state.places.center,
-    placeFormData: state.form["SearchPlaceForm"] || {}
+    placeFormData: state.form["SearchPlaceForm"] || {},
+    filterFormProps: state.form["PlacesResultsFilter"] || {}
   };
 }
 

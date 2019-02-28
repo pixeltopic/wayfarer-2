@@ -46,7 +46,7 @@ class Incidents extends Component {
   );
 
   renderIncidentMapMarkers = (incident, key) => {
-    const { shortDesc, type, severity, lat, lng } = incident;
+    const { type, severity, lat, lng } = incident;
     if (type === 1 && !this.state.showConstruction) {
       return null;
     } else if (type === 2 && !this.state.showEvents) {
@@ -56,7 +56,7 @@ class Incidents extends Component {
     } else if (type === 4 && !this.state.showIncidents) {
       return null;
     } else {
-      return (<Marker key={key} header={shortDesc} popup type="incident" incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
+      return (<Marker key={key} incidentData={incident} popup type="incident" incidentType={type} incidentSeverity={severity} lat={lat} lng={lng}/>);
     }
   }
 

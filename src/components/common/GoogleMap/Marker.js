@@ -18,6 +18,16 @@ class Marker extends Component {
     }
   }
 
+  nameIncident = () => {
+    switch(this.props.incidentType) {
+      case 1: return "Construction";
+      case 2: return "Event";
+      case 3: return "Congestion";
+      case 4: return "Incident";
+      default: return "";
+    }
+  }
+
   styleIncidentSeverity = () => {
     // returns the icon name based on the provided incidentType. (todo: add these icons to labels so they correspond)
     switch(this.props.incidentSeverity) {
@@ -42,17 +52,27 @@ class Marker extends Component {
   }
 
   renderIncidentMarker = () => (
-    <Popup 
+    <Popup
+      on="click"
+      size="small"
       trigger={
         <Icon 
           name={this.styleIncident() || "question circle"} 
-          color={this.styleIncidentSeverity() || null} 
+          color={this.styleIncidentSeverity() || null}
           circular size="big"
           inverted
         />
-      } 
-      header={this.props.header}
-    />
+      }  
+    >
+      <Popup.Content as={Card}>
+        <Card.Content>
+          <Card.Header><Icon name={this.styleIncident() || null} color={this.styleIncidentSeverity() || null}/>{this.nameIncident()}</Card.Header>
+          <Card.Description>
+            {this.props.incidentData.fullDesc}
+          </Card.Description>
+        </Card.Content>
+      </Popup.Content>
+    </Popup>
   );
 
   onClickPlaceDetails = place_id => {
@@ -200,7 +220,9 @@ ConnectedMarker.defaultProps = {
   header: null, // popup text
   type: "", // if only true if rendering Incidents onto the map. UPDATE: Must be a string of either "incident" "place" or null/""
   iconName: "home", // if not an incidentMarker, you can specify a custom iconName.
-  iconColor: null // custom icon color if not incident marker
+  iconColor: null, // custom icon color if not incident marker
+  incidentData: null, // metadata provided from a mapquest incident object
+  placeData: null // metadata provided from a google place object
 }
 
 export default ConnectedMarker;

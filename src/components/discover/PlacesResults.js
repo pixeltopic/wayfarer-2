@@ -132,7 +132,7 @@ class PlacesResults extends Component {
           <Card.Content extra>
             <Button.Group size="small" fluid compact>
               {this.placeDirectionsButton(place)}
-              {this.placeDetailsButton(place.id)}
+              {this.placeDetailsButton(place.place_id)}
               <Button disabled={place.id === this.state.highlighted} onClick={() => this.setState({ highlighted: place.id })} basic color="orange">Highlight</Button>
             </Button.Group>
             

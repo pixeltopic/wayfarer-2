@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Segment, Card, Divider, Button, Icon } from "semantic-ui-react";
+import { Header, Card, Divider, Button, Icon } from "semantic-ui-react";
 import { getDistance } from "geolib";
 import _ from "lodash";
 
@@ -156,31 +156,50 @@ class PlacesResults extends Component {
 
   render() {
     return (
-      <Segment>
+      <Card fluid>
         <BasicMap center={this.props.center}>      
           {this.props.center && this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.placesAsMarkers()}
         </BasicMap>
-        <Divider hidden />
-        <PlacesResultsFilter />
-        <Card.Group centered doubling itemsPerRow={2}>
-            {this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.renderPlacesAsCards()}
-        </Card.Group>
-
-        <Divider hidden />
-        <Button disabled={this.state.activePage === 0} onClick={() => this.setState({ activePage: this.state.activePage - 1 })}>
-          Previous
-        </Button>
-        <Button 
-          floated="right" 
-          disabled={(!this.props.nextPageToken && this.state.maxPages-1 === this.state.activePage) || this.state.disableNextButton}
-          loading={this.state.disableNextButton}
-          onClick={() => this.setState(
-            { disableNextButton: true }, 
-            () => this.props.fetchMorePlaces(() => this.setState({ disableNextButton: false, activePage: this.state.activePage + 1 })))}
-        >
-          Next
-        </Button>
-      </Segment>
+        <Card.Content>
+          <Divider horizontal>
+            <Header as="h4">
+              <Icon name="filter" />
+              Filter
+            </Header>
+          </Divider>
+          <PlacesResultsFilter />
+        </Card.Content>
+        <Card.Content style={{ borderTop: "none", paddingTop: 0 }}>
+          <Divider horizontal>
+            <Header as="h4" name="results" id="results">
+              <Icon name="search" />
+              Place Results
+            </Header>
+          </Divider>
+          <Card.Group centered doubling itemsPerRow={2}> 
+              {this.props.places.length >= 1 && this.props.places.length > this.state.activePage && this.renderPlacesAsCards()}
+          </Card.Group>
+        </Card.Content>
+        <Card.Content extra>
+          <Button disabled={this.state.activePage === 0} onClick={() => {
+              this.setState({ activePage: this.state.activePage - 1 });
+              window.location = "#results";
+            }}
+          >
+            Previous
+          </Button>
+          <Button 
+            floated="right" 
+            disabled={(!this.props.nextPageToken && this.state.maxPages-1 === this.state.activePage) || this.state.disableNextButton}
+            loading={this.state.disableNextButton}
+            onClick={() => this.setState(
+              { disableNextButton: true }, 
+              () => this.props.fetchMorePlaces(() => this.setState({ disableNextButton: false, activePage: this.state.activePage + 1 }, () => window.location = "#results")))}
+          >
+            Next
+          </Button>
+        </Card.Content>
+      </Card>
     );
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Icon, Item, Tab } from "semantic-ui-react";
+import { Icon, Item, Tab, Header, Divider, Card, Label } from "semantic-ui-react";
 
 import PolylineMap from "../common/GoogleMap/PolylineMap";
 
@@ -16,6 +16,7 @@ class DirectionSteps extends Component {
   }
 
   renderSteps = () => {
+    const labelStyle = { border: "none", margin: "0 0 0 0", padding: "0 3px 0 3px" };
     const routeSteps = this.props.routes.map((route, key) => {
       const stepArray = route["legs"]["0"]["steps"].map((step, key) => {
         return (
@@ -27,8 +28,8 @@ class DirectionSteps extends Component {
                 ).replace(/&nbsp;/g, "").replace(/<div style="font-size:0\.9em">/g, ", ").replace(/&amp;/g, "&")}
               </Item.Header>
               <Item.Extra>
-                <Icon color="teal" name="time" />{step.duration.text}{" "}
-                <Icon color="teal" name="road" />{step.distance.text}
+                <Label content={step.duration.text} icon="time" basic color="teal" style={labelStyle}/>
+                <Label content={step.distance.text} icon="road" basic color="teal" style={labelStyle}/>
               </Item.Extra>
             </Item.Content>
           </Item>
@@ -38,7 +39,28 @@ class DirectionSteps extends Component {
       return (
         <React.Fragment>
           <PolylineMap key={key} polyline={polyline} center={route["bounds"]} />
-          <Item.Group divided>{stepArray}</Item.Group>
+          <Card.Content>
+            <Divider horizontal>
+              <Header as="h4">
+                <Icon name="bar chart" />
+                Stats
+              </Header>
+            </Divider>
+            <Card.Description textAlign="center">
+              <Label content={route["legs"]["0"]["distance"]["text"]} icon="road" basic style={labelStyle}/>
+              <Label content={route["legs"]["0"]["duration"]["text"]} icon="clock outline" basic style={labelStyle}/>
+            </Card.Description>
+            <Divider horizontal>
+              <Header as="h4">
+                <Icon name="map outline" />
+                Steps
+              </Header>
+            </Divider>
+            <Card.Description as={Item.Group} divided>
+              {stepArray}
+            </Card.Description>
+          
+          </Card.Content>
         </React.Fragment>
       );
     });
@@ -52,7 +74,7 @@ class DirectionSteps extends Component {
     const routeContents = this.renderSteps();
 
     const panes = routeContents.map((content, routeNum) => {
-      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane attached={false}>{content}</Tab.Pane>};
+      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane as={Card} fluid>{content}</Tab.Pane>};
     })
 
     return (

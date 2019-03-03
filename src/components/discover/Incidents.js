@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Item, Tab, Message, Icon, Menu } from "semantic-ui-react";
+import { Item, Tab, Message, Icon, Menu, Card, Divider, Header, Dimmer, Loader } from "semantic-ui-react";
 import _ from "lodash";
 
 import { fetchIncidents } from "../../actions";
@@ -62,7 +62,7 @@ class Incidents extends Component {
 
   toggleMarkerViews = () => {
     return (
-      <Menu>
+      <Menu style={{ boxShadow: "none" }}>
         <Menu.Item 
           active={this.state.showConstruction} 
           onClick={() => this.setState({ showConstruction: !this.state.showConstruction })}>
@@ -118,10 +118,13 @@ class Incidents extends Component {
         return { 
           menuItem: `Route ${Number(routeNum)+1}`, 
           render: () => (
-            <Tab.Pane 
-              loading={this.state.loading} 
-              attached={false}
+            <Tab.Pane  
+              as={Card}
+              fluid
             >
+              <Dimmer active={this.state.loading} inverted>
+                <Loader size="medium"></Loader>
+              </Dimmer>
               <PolylineMap
                 key={routeNum} 
                 polyline={polyline} 
@@ -129,15 +132,42 @@ class Incidents extends Component {
               >
                 {incidentMapMarkers}
               </PolylineMap>
-              {this.toggleMarkerViews()}
-              <Item.Group divided>
-                {paneData}
-              </Item.Group>
+              <Card.Content>
+                <Divider horizontal>
+                  <Header as="h4">
+                    <Icon name="filter" />
+                    Filter
+                  </Header>
+                </Divider>
+                {this.toggleMarkerViews()}
+                <Divider horizontal>
+                  <Header as="h4">
+                    <Icon name="search" />
+                    All Incidents
+                  </Header>
+                </Divider>
+                <Card.Description as={Item.Group} divided>
+                  {paneData}
+                </Card.Description>
+              </Card.Content>
             </Tab.Pane>
           )
         };
       else
-        return { menuItem: `Route ${Number(routeNum)+1}`, render: () => <Tab.Pane loading={this.state.loading} attached={false}><PolylineMap key={routeNum} polyline={polyline} center={center} />{this.noIncidentMessage()}</Tab.Pane> };
+        return { 
+          menuItem: `Route ${Number(routeNum)+1}`, 
+          render: () => (
+            <Tab.Pane as={Card} fluid>
+              <Dimmer active={this.state.loading} inverted>
+                <Loader size="medium"></Loader>
+              </Dimmer>
+              <PolylineMap key={routeNum} polyline={polyline} center={center} />
+              <Card.Content>
+                {this.noIncidentMessage()}
+              </Card.Content>
+            </Tab.Pane>
+          )
+        };
     });
 
     const initialPanes = this.props.routes.map((route, routeNum) => {

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { Tab, Card, Icon, Button, Table, Item, Rating, Label, List, Divider, Grid } from "semantic-ui-react";
+import { Tab, Card, Button, Item, Rating, Label, List, Divider, Grid } from "semantic-ui-react";
 
 import BasicMap from "../common/GoogleMap/BasicMap";
 import Marker from "../common/GoogleMap/Marker";
@@ -8,17 +8,6 @@ import Marker from "../common/GoogleMap/Marker";
 import { updateActiveDiscover } from "../../actions";
 
 class PlaceDetails extends Component {
-
-  pricingInfo = pricing => {
-    switch(pricing) {
-        case 0: return (<React.Fragment><Icon name="money"/>Free</React.Fragment>);
-        case 1: return (<React.Fragment><Icon name="money" color="green"/>Inexpensive</React.Fragment>);
-        case 2: return (<React.Fragment><Icon name="money" color="olive"/>Moderately Priced</React.Fragment>);
-        case 3: return (<React.Fragment><Icon name="money" color="orange"/>Expensive</React.Fragment>);
-        case 4: return (<React.Fragment><Icon name="money" color="red"/>Very Expensive</React.Fragment>);
-        default: return (<React.Fragment><Icon name="money" />No Pricing Info Found</React.Fragment>);
-    }
-  }
 
   pricingColor = pricing => {
     switch(pricing) {
@@ -42,7 +31,7 @@ class PlaceDetails extends Component {
   }
 
   renderMapPane = () => {
-    const { geometry, rating, name, formatted_address, formatted_phone_number, website, opening_hours, price_level } = this.props.placeDetails;
+    const { geometry, rating, name, formatted_address, formatted_phone_number, website, opening_hours, price_level, types } = this.props.placeDetails;
 
     return (
       <Tab.Pane as={Card} fluid>
@@ -51,30 +40,27 @@ class PlaceDetails extends Component {
         </BasicMap>}
         <Card.Content>
           <Card.Header>{name}</Card.Header>
-          <Card.Meta>
-            {formatted_address}
-          </Card.Meta>
-          {!opening_hours && <Card.Description>
-            <p>
-              <Icon name="calendar outline" color="olive" />
-              {opening_hours ? (opening_hours.open_now ? "Open Now" : "Closed") : "No opening hour data found" }
-            </p>
-            <p>
-              <Icon name="heart outline" color="pink" />Rating: {rating === 0 ? "0" : rating}/5
-            </p>
-            {(price_level || price_level === 0) && <p>
-              {this.pricingInfo(price_level)}
-            </p>}
-            <p>
-              <Icon name="phone" color="orange" />{formatted_phone_number}
-            </p>
-            {website && <p>
-              <Icon name="linkify" color="green"/><a href={website} target="_blank" rel="noopener noreferrer">Official Website</a>
-            </p>}
-          </Card.Description>}
-          {opening_hours && opening_hours.weekday_text && <Card.Description>
+          {types && types.length !== 0 && <Card.Meta>
+            {types.map((type, key) => (
+              <Fragment key={key}>
+                {" "}
+                <Label style={{ marginTop:"5px", marginBottom: "5px" }} size="tiny" tag>
+                  {type.toString().replace(/_/g, " ")}
+                </Label>
+              </Fragment>)
+            )}
+          </Card.Meta>}
+          <Card.Description>
             <Grid columns={2} relaxed='very'>
               <Grid.Column as={List} relaxed>
+                <List.Item>
+                  <List.Icon name="marker" color="red" />
+                  <List.Content>
+                    <List.Description>
+                      {formatted_address || "None"}
+                    </List.Description>
+                  </List.Content>
+                </List.Item>
                 <List.Item>
                   <List.Icon name="calendar outline" color="olive" />
                   <List.Content>
@@ -117,7 +103,7 @@ class PlaceDetails extends Component {
                 </List.Item>}
               </Grid.Column>
               <Grid.Column textAlign="right">
-                <List relaxed floated="right">
+                {opening_hours && opening_hours.weekday_text && <List relaxed floated="right">
                   {opening_hours.weekday_text.map((str, key) => (
                     <List.Item key={key}>
                       <List.Content>
@@ -125,50 +111,16 @@ class PlaceDetails extends Component {
                       </List.Content>
                     </List.Item>
                   ))}
-                </List>
+                </List>}
               </Grid.Column>
             </Grid>
             <Divider vertical hidden></Divider>
-          </Card.Description>}
-        </Card.Content>
-        <Card.Content extra>
-          <Button basic primary onClick={() => this.props.updateActiveDiscover("places")}>Back</Button>
-        </Card.Content>
-      </Tab.Pane>
-    );
-  }
-
-  renderOpeningHoursPane = () => {
-    const { opening_hours } = this.props.placeDetails;
-
-    return (
-      <Tab.Pane as={Card} fluid>
-        <Card.Content>
-          <Card.Header>Opening Hours</Card.Header>
-          
-          <Card.Description as={Table} basic='very' celled>
-          
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Day</Table.HeaderCell>
-                <Table.HeaderCell>Time</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {opening_hours.weekday_text.map((str, key) => (
-                <Table.Row key={key}>
-                  <Table.Cell>{str.substr(0,str.indexOf(" ")-1)}</Table.Cell>
-                  <Table.Cell>{str.substr(str.indexOf(" ")+1)}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>            
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
           <Button basic primary onClick={() => this.props.updateActiveDiscover("places")}>Back</Button>
         </Card.Content>
       </Tab.Pane>
-
     );
   }
 
@@ -213,10 +165,7 @@ class PlaceDetails extends Component {
       return null;
     }
     let panes = [{ menuItem: "Info", render: () => this.renderMapPane() }];
-    const { opening_hours, reviews } = this.props.placeDetails;
-    if (opening_hours && opening_hours.weekday_text) {
-      panes = panes.concat([{ menuItem: 'Opening Hours', render: () => this.renderOpeningHoursPane() }]);
-    }
+    const { reviews } = this.props.placeDetails;
     if (reviews && reviews.length > 0) {
       panes = panes.concat([{ menuItem: 'Reviews', render: () => this.renderReviewsPane() }]);
     }

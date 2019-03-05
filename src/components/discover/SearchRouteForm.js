@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Select, Menu, Message, Input, Dropdown } from "semantic-ui-react";
+import  { Button, Form as SemForm, Select, Menu, Message, Input, Dropdown, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
@@ -16,14 +16,27 @@ const modeSelect = [
 
 class SearchRouteForm extends Component {
 
-  state = { disableButton: false, errorMessage: "" };
+  state = { 
+    disableButton: false, 
+    errorMessage: "", 
+    locationEnabled: false, 
+    lat: null,
+    lng: null
+  };
+
+  componentDidMount() {
+    window.navigator.geolocation.getCurrentPosition(
+      pos => this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude, locationEnabled: true }),
+      err => this.setState({ locationEnabled: false })
+    );
+  }
 
   onSubmit = (values, actions) => {
     console.log(values);
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchDirections(
-        values, 
+        { ...values, ...this.state.locationEnabled && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
         (payload) => this.setState({ disableButton: false, errorMessage: payload }),
         () => this.props.formCache(this.props.formName, values)
@@ -35,14 +48,18 @@ class SearchRouteForm extends Component {
 
   validateSchema = () => (
     Yup.object().shape({ 
-      origin: Yup.string().min(2, "Too short!").required("You must enter an origin"),
-      destination: Yup.string().min(2, "Too short!").required("You must enter a destination"),
+      origin: Yup.string(),
+      destination: Yup.string().min(2, "Too short!").required("Destination required."),
       mode: Yup.string().required("Pick a travel mode.")
     })
   );
 
   validateForm = (values) => {
     const errors = {};
+    if (!values.useCurrentLocation && !values.origin) {
+      errors.origin = "Origin required.";
+    }
+
     if (this.props.activeItem === "incidents" && values.units === "metric" && values.radius > 24) {
       errors.radius = "Max radius is 24 kilometers.";
     }
@@ -61,7 +78,7 @@ class SearchRouteForm extends Component {
 
   renderError = props => {
     // console.log(props);
-    return <div style={{ color: "red" }}>{props.children}</div>;
+    return <Label basic color='red' pointing>{props.children}</Label>;
   }
 
   renderServerError = () => {
@@ -75,16 +92,32 @@ class SearchRouteForm extends Component {
     );
   }
 
-  renderForm = ({ errors, status, touched, isSubmitting, values }) => {
+  renderLocationMsg = () => {
+    return (
+      <Menu.Item>
+        <Message info>
+          <Message.Header>Tip</Message.Header>
+          <p>Enable location to use current position.</p>
+        </Message>
+      </Menu.Item>
+    );
+  }
+
+  renderForm = ({ isSubmitting, values }) => {
     return (
       <Form autoComplete="off" >
 
         <Menu.Item>
           <Menu.Header>Origin</Menu.Header>
+          
           <SemForm.Group>
-            <SemField type="text" fluid component={SemForm.Input} name="origin" placeholder="Anaheim" />
+            <SemField type="text" fluid component={SemForm.Input} disabled={values.useCurrentLocation} name="origin" placeholder="Anaheim" />
             <ErrorMessage name="origin" component={this.renderError} />
           </SemForm.Group>
+          <SemForm.Group style={{ marginTop: "5px" }}>
+            <SemField component={SemForm.Checkbox} disabled={!this.state.locationEnabled} name="useCurrentLocation" label="Use Current Location"/>      
+          </SemForm.Group>
+          
         </Menu.Item>
         <Menu.Item>
           <Menu.Header>Destination</Menu.Header>
@@ -143,6 +176,7 @@ class SearchRouteForm extends Component {
           </Button>
         </Menu.Item>
         {this.state.errorMessage && this.renderServerError()}
+        {!this.state.locationEnabled && this.renderLocationMsg()}
 
       </Form>
     );
@@ -159,7 +193,8 @@ class SearchRouteForm extends Component {
           initialValues={{ 
             origin: cachedFormData.origin || "", 
             destination: cachedFormData.destination || "", 
-            mode: cachedFormData.mode || "", 
+            mode: cachedFormData.mode || "",
+            useCurrentLocation: cachedFormData.useCurrentLocation || false,
             altRoutes: cachedFormData.altRoutes || false, 
             units: cachedFormData.units || "imperial",
             radius: cachedFormData.radius || null,

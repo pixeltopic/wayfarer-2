@@ -129,6 +129,7 @@ class Marker extends Component {
         disabled={this.state.disablePlaceButton || !this.props.placeFormData.address || !this.props.placeData.vicinity} 
         loading={this.state.disablePlaceButton} 
         onClick={() => this.onClickPlaceDirections()}
+        fluid={this.props.activeItem === "placeDetails"}
       >
         Get Directions
       </Button>
@@ -152,7 +153,9 @@ class Marker extends Component {
         <Popup.Content as={Card}>
           <Card.Content>
             <Card.Header>{this.props.placeData.name}</Card.Header>
-            <Card.Meta>Rating: {this.props.placeData.rating}/5 based on {this.props.placeData.user_ratings_total} user ratings.</Card.Meta>
+            <Card.Meta>
+              {this.props.placeData.user_ratings_total ? `Rating: ${this.props.placeData.rating}/5 based on ${this.props.placeData.user_ratings_total} user ratings.` : "No ratings found"}
+            </Card.Meta>
             <Card.Description>
               <p>
                 <Icon name="calendar outline" color="olive" />
@@ -164,10 +167,10 @@ class Marker extends Component {
             </Card.Description>
           </Card.Content>
           <Card.Content extra>
-            <div className='ui two buttons'>
+            {this.props.activeItem !== "placeDetails" ? (<div className='ui two buttons'>
               {this.placeDirectionsButton()}
               {this.placeDetailsButton(this.props.placeData.place_id)}
-            </div>
+            </div>) : this.placeDirectionsButton()}
           </Card.Content>
         </Popup.Content>
       </Popup>
@@ -209,7 +212,8 @@ class Marker extends Component {
 
 const mapStateToProps = state => {
   return {
-    placeFormData: state.form["SearchPlaceForm"] || {}
+    placeFormData: state.form["SearchPlaceForm"] || {},
+    activeItem: state.discover.activeItem
   };
 }
 
@@ -222,7 +226,9 @@ ConnectedMarker.defaultProps = {
   iconName: "home", // if not an incidentMarker, you can specify a custom iconName.
   iconColor: null, // custom icon color if not incident marker
   incidentData: null, // metadata provided from a mapquest incident object
-  placeData: null // metadata provided from a google place object
+  placeData: null, // metadata provided from a google place object
+  lat: null, // required prop to render on map
+  lng: null // required prop to render on map
 }
 
 export default ConnectedMarker;

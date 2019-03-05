@@ -36,7 +36,7 @@ class PlaceDetails extends Component {
     return (
       <Tab.Pane as={Card} fluid>
         {geometry.location && <BasicMap center={geometry.location}>
-          <Marker lat={geometry.location.lat} lng={geometry.location.lng} iconName="marker" iconColor="red"/>
+          <Marker lat={geometry.location.lat} lng={geometry.location.lng} iconName="marker" iconColor="red" popup type="place" placeData={this.props.placeDetails}/>
         </BasicMap>}
         <Card.Content>
           <Card.Header>{name}</Card.Header>

@@ -21,14 +21,19 @@ class SearchRouteForm extends Component {
     errorMessage: "", 
     locationEnabled: false, 
     lat: null,
-    lng: null
+    lng: null,
+    geoLoc: window.navigator.geolocation
   };
 
   componentDidMount() {
-    window.navigator.geolocation.getCurrentPosition(
+    this.watchID = this.state.geoLoc.watchPosition(
       pos => this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude, locationEnabled: true }),
       err => this.setState({ locationEnabled: false })
     );
+  }
+
+  componentWillUnmount() {
+    this.state.geoLoc.clearWatch(this.watchID);
   }
 
   onSubmit = (values, actions) => {
@@ -36,7 +41,7 @@ class SearchRouteForm extends Component {
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchDirections(
-        { ...values, ...this.state.locationEnabled && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
+        { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
         (payload) => this.setState({ disableButton: false, errorMessage: payload }),
         () => this.props.formCache(this.props.formName, values)
@@ -78,7 +83,7 @@ class SearchRouteForm extends Component {
 
   renderError = props => {
     // console.log(props);
-    return <Label basic color='red' pointing>{props.children}</Label>;
+    return <div><Label basic color='red' pointing>{props.children}</Label></div>;
   }
 
   renderServerError = () => {
@@ -112,10 +117,11 @@ class SearchRouteForm extends Component {
           
           <SemForm.Group>
             <SemField type="text" fluid component={SemForm.Input} disabled={values.useCurrentLocation} name="origin" placeholder="Anaheim" />
-            <ErrorMessage name="origin" component={this.renderError} />
+            
           </SemForm.Group>
           <SemForm.Group style={{ marginTop: "5px" }}>
-            <SemField component={SemForm.Checkbox} disabled={!this.state.locationEnabled} name="useCurrentLocation" label="Use Current Location"/>      
+            <SemField component={SemForm.Checkbox} disabled={!this.state.locationEnabled} name="useCurrentLocation" label="Use Current Location"/>  
+            <ErrorMessage name="origin" component={this.renderError} />    
           </SemForm.Group>
           
         </Menu.Item>

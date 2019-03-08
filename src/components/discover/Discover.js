@@ -51,7 +51,7 @@ class Discover extends Component {
       case "places":
         if (this.props.places.length === 0) {
           return <SearchPlaceholder />;
-        } else if (this.props.places.length === 0) {
+        } else if (this.props.places.length !== 0 && this.props.places[0].length === 0) {
           return <SearchPlaceholder error resultName="places" />;
         } else {
           return <PlacesResults />;

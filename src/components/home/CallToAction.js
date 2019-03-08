@@ -30,14 +30,22 @@ Need to figure out how to handle error messages. Perhaps use a red pointing labe
 */
 
 class CallToAction extends Component {
-  state = { disableButton: false, locationEnabled: false, errorMessage: "", textIdx: 0, lat: null, lng: null };
+  state = { 
+    disableButton: false, 
+    locationEnabled: false, 
+    errorMessage: "", 
+    textIdx: 0, 
+    lat: null, 
+    lng: null,
+    geoLoc: window.navigator.geolocation
+  };
 
   componentDidMount() {
     this.timeout = setInterval(() => {
       let currentIdx = this.state.textIdx;
       this.setState({ textIdx: currentIdx + 1 });
     }, 1500);
-    window.navigator.geolocation.getCurrentPosition(
+    this.watchID = this.state.geoLoc.watchPosition(
       pos => this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude, locationEnabled: true }),
       err => this.setState({ errorMessage: err.message, locationEnabled: false })
     );
@@ -45,6 +53,7 @@ class CallToAction extends Component {
 
   componentWillUnmount() {
     clearInterval(this.timeout);
+    this.state.geoLoc.clearWatch(this.watchID);
   }
 
   onSubmit = (values, actions) => {

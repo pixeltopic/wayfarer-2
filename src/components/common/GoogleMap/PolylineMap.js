@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GoogleMap from "google-map-react";
+import { connect } from "react-redux";
 
 import Marker from "./Marker";
 import { geolocationUtils } from "../../../utils";
@@ -53,8 +54,22 @@ class PolylineMap extends Component {
           defaultZoom={this.props.zoom || 11}
           onGoogleApiLoaded={({map, maps}) => this.renderPolylines(map, maps)}
         >
-          <Marker iconColor="teal" iconName="home" lat={decodedPolyline[0].lat} lng={decodedPolyline[0].lng}/>
-          <Marker iconColor="teal" iconName="flag checkered" lat={decodedPolyline[decodedPolyline.length-1].lat} lng={decodedPolyline[decodedPolyline.length-1].lng}/>
+          <Marker 
+            iconColor="teal" 
+            iconName="home"
+            popup
+            header={this.props.origin}
+            lat={decodedPolyline[0].lat} 
+            lng={decodedPolyline[0].lng}
+          />
+          <Marker 
+            iconColor="teal" 
+            iconName="flag checkered" 
+            popup
+            header={this.props.destination}
+            lat={decodedPolyline[decodedPolyline.length-1].lat} 
+            lng={decodedPolyline[decodedPolyline.length-1].lng}
+          />
           {this.props.children}
         </GoogleMap>
       </div>
@@ -70,5 +85,8 @@ class PolylineMap extends Component {
 //   },
 //   zoom: 13
 // };
+const mapStateToProps = state => {
+  return { origin: state.maps.origin, destination: state.maps.destination };
+}
 
-export default PolylineMap;
+export default connect(mapStateToProps)(PolylineMap);

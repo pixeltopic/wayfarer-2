@@ -6,7 +6,7 @@ class BasicMap extends Component {
   state = { center: this.props.center };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.center.lat !== state.center.lat && props.center.lng !== state.center.lng) {
+    if (props.center === null || (props.center.lat !== state.center.lat && props.center.lng !== state.center.lng)) {
       return { center: props.center };
     }
     return null;

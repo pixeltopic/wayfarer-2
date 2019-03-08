@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Select, Menu, Message, Dropdown, Input } from "semantic-ui-react";
+import  { Button, Form as SemForm, Select, Menu, Message, Dropdown, Input, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
@@ -31,14 +31,32 @@ const typeSelect = ["accounting", "airport", "amusement park", "aquarium", "art 
 
 class SearchPlaceForm extends Component {
 
-  state = { disableButton: false, errorMessage: "" };
+  state = { 
+    disableButton: false, 
+    errorMessage: "" ,
+    locationEnabled: false, 
+    lat: null,
+    lng: null,
+    geoLoc: window.navigator.geolocation
+  };
+
+  componentDidMount() {
+    this.watchID = this.state.geoLoc.watchPosition(
+      pos => this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude, locationEnabled: true }),
+      err => this.setState({ locationEnabled: false })
+    );
+  }
+
+  componentWillUnmount() {
+    this.state.geoLoc.clearWatch(this.watchID);
+  }
 
   onSubmit = (values, actions) => {
-    console.log(values);
+    console.log({ ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}});
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchPlaces(
-        values, 
+        { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
         (payload) => this.setState({ disableButton: false, errorMessage: payload })
       )
@@ -50,13 +68,18 @@ class SearchPlaceForm extends Component {
   validateSchema = () => (
     Yup.object().shape({ 
       keyword: Yup.string().min(2, "Too short!").required("Keyword required."),
-      address: Yup.string().min(2, "Too short!").required("Address required."),
+      address: Yup.string(),
       radius: Yup.number().moreThan(0, "Must be greater than 0!").required("Radius required.") // Do the harder checking later (no negatives must be, under 31 miles or 50km)
     })
   );
 
   validateForm = (values) => {
     const errors = {};
+    if (!values.useCurrentLocation && !values.address) {
+      errors.address = "Address required.";
+    }
+
+
     if (values.units === "metric" && values.radius > 50) {
       errors.radius = "Max radius is 50 kilometers.";
     }
@@ -70,8 +93,7 @@ class SearchPlaceForm extends Component {
   }
 
   renderError = props => {
-    // console.log(props);
-    return <div style={{ color: "red" }}>{props.children}</div>;
+    return <div><Label basic color='red' pointing>{props.children}</Label></div>;
   }
 
   renderServerError = () => {
@@ -85,7 +107,18 @@ class SearchPlaceForm extends Component {
     );
   }
 
-  renderForm = ({ errors, status, touched, isSubmitting }) => {
+  renderLocationMsg = () => {
+    return (
+      <Menu.Item>
+        <Message info>
+          <Message.Header>Tip</Message.Header>
+          <p>Enable location to use current position.</p>
+        </Message>
+      </Menu.Item>
+    );
+  }
+
+  renderForm = ({ isSubmitting, values }) => {
     return (
       <Form autoComplete="off" >
 
@@ -100,8 +133,12 @@ class SearchPlaceForm extends Component {
         <Menu.Item>
           <Menu.Header>Near</Menu.Header>
           <SemForm.Group>
-            <SemField type="text" fluid component={SemForm.Input} name="address" placeholder="Irvine" />
-            <ErrorMessage name="address" component={this.renderError} />
+            <SemField type="text" fluid component={SemForm.Input} disabled={values.useCurrentLocation} name="address" placeholder="Irvine" />
+            
+          </SemForm.Group>
+          <SemForm.Group style={{ marginTop: "5px" }}>
+            <SemField component={SemForm.Checkbox} disabled={!this.state.locationEnabled} name="useCurrentLocation" label="Use Current Location"/>  
+            <ErrorMessage name="address" component={this.renderError} />    
           </SemForm.Group>
         </Menu.Item>
 
@@ -145,6 +182,7 @@ class SearchPlaceForm extends Component {
           </Button>
         </Menu.Item>
         {this.state.errorMessage && this.renderServerError()}
+        {!this.state.locationEnabled && this.renderLocationMsg()}
 
       </Form>
     );
@@ -160,7 +198,8 @@ class SearchPlaceForm extends Component {
           validate={this.validateForm}
           initialValues={{ 
             keyword: cachedFormData.keyword || "", 
-            address: cachedFormData.address || "", 
+            address: cachedFormData.address || "",
+            useCurrentLocation: cachedFormData.useCurrentLocation || false,
             radius: cachedFormData.radius || "0", 
             units: cachedFormData.units || "imperial",
             type: cachedFormData.type || "",

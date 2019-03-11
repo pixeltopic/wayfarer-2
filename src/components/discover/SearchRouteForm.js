@@ -210,7 +210,8 @@ class SearchRouteForm extends Component {
             avoidIndoor: cachedFormData.avoidIndoor || false 
           }} // later unit preference should be set on acc settings
           onSubmit={this.onSubmit}
-          render={this.renderForm} 
+          render={this.renderForm}
+          enableReinitialize
         />
       </Menu>
     );

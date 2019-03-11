@@ -56,8 +56,9 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPropSchema.destination = queryParams.destination;
       searchPropSchema.origin = queryParams.origin;
       
-      await dispatch(fetchDirections(searchPropSchema)); // wait for directions to fetch
       dispatch(formCache("SearchRouteForm", searchPropSchema)); // update form
+      await dispatch(fetchDirections(searchPropSchema)); // wait for directions to fetch
+      
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "directions" }); // update active discover panel
       
       if (callback) callback();
@@ -71,8 +72,9 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPropSchema.units = queryParams.units || "imperial";
       searchPropSchema.radius = queryParams.radius;
         
-      await dispatch(fetchDirections(searchPropSchema));
       dispatch(formCache("SearchRouteForm", searchPropSchema));
+      await dispatch(fetchDirections(searchPropSchema));
+      
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "incidents" });
       
       if (callback) callback();
@@ -98,9 +100,9 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPlacePropSchema.keyword = queryParams.keyword;
       searchPlacePropSchema.units = queryParams.units;
       searchPlacePropSchema.radius = queryParams.radius;
+      dispatch(formCache("SearchPlaceForm", searchPlacePropSchema));
 
       await dispatch(fetchPlaces(searchPlacePropSchema));
-      dispatch(formCache("SearchPlaceForm", searchPlacePropSchema));
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "places" });
       
       if (callback) callback();

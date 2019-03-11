@@ -149,7 +149,7 @@ class PlacesResults extends Component {
       const { lat, lng } = place.geometry.location;
       return <Marker key={key} popup type="place" iconColor={this.state.highlighted === place.id ? "orange" : null} iconName="map marker alternate" lat={lat} lng={lng} placeData={place} />
     });
-    markers.push(<Marker key={-1} iconName="home" iconColor="teal" lat={this.props.center.lat} lng={this.props.center.lng}/>);
+    markers.push(<Marker key={-1} iconName="home" iconColor="teal" popup={this.props.address} header={this.props.address} lat={this.props.center.lat} lng={this.props.center.lng}/>);
     return markers;
   }
 
@@ -206,9 +206,10 @@ class PlacesResults extends Component {
 
 const mapStateToProps = (state) => {
   return { 
-    places: state.places.results, 
+    places: state.places.results,
     nextPageToken: state.places.next_page_token,
     center: state.places.center,
+    address: state.places.address,
     placeFormData: state.form["SearchPlaceForm"] || {},
     filterFormProps: state.form["PlacesResultsFilter"] || {}
   };

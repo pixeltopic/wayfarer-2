@@ -208,6 +208,7 @@ class SearchPlaceForm extends Component {
           }}
           onSubmit={this.onSubmit}
           render={this.renderForm} 
+          enableReinitialize
         />
       </Menu>
     );

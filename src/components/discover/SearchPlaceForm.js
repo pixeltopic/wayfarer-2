@@ -6,6 +6,7 @@ import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
 import { fetchPlaces, formCache } from "../../actions";
+import { formNames } from "../../utils";
 
 const priceSelect = [
   { value: -1, text: "None" },
@@ -222,7 +223,7 @@ const mapStateToProps = (state, ownProps) => {
 const ConnectedSearchPlaceForm = connect(mapStateToProps, { fetchPlaces, formCache })(SearchPlaceForm);
 
 ConnectedSearchPlaceForm.defaultProps = {
-  formName: "SearchPlaceForm"
+  formName: formNames.SEARCH_PLACE_FORM
 };
 
 export default ConnectedSearchPlaceForm;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Icon, Popup, Card, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { formCache, updateActiveDiscover, fetchPlaceDetails, fetchDirections } from "../../../actions";
+import { formNames } from "../../../utils";
 
 class Marker extends Component {
 
@@ -112,7 +113,7 @@ class Marker extends Component {
       avoidFerries: false, 
       avoidIndoor: false 
     }
-    this.props.formCache("SearchRouteForm", searchProps);
+    this.props.formCache(formNames.SEARCH_ROUTE_FORM, searchProps);
     this.setState(
       { disablePlaceButton: true }, 
       () => this.props.fetchDirections(searchProps, () => this.props.updateActiveDiscover("directions"))
@@ -212,7 +213,7 @@ class Marker extends Component {
 
 const mapStateToProps = state => {
   return {
-    placeFormData: state.form["SearchPlaceForm"] || {},
+    placeFormData: state.form[formNames.SEARCH_PLACE_FORM] || {},
     activeItem: state.discover.activeItem
   };
 }

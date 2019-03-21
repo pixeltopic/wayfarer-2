@@ -1,6 +1,7 @@
 import server from "../api/server";
 import { updateToken } from "./authActions";
 import { formCache } from "./formActions";
+import { formNames } from "../utils";
 
 import { FETCH_DIRECTIONS } from "./types";
 
@@ -18,10 +19,10 @@ export const fetchDirections = (searchProps, callbackFinal=null, callbackError=n
     
     dispatch({ type: FETCH_DIRECTIONS, payload: response.data });
     if (response.data.directions && response.data.directions.origin && 
-      response.data.directions.destination && getState().form["SearchRouteForm"]) {
+      response.data.directions.destination && getState().form[formNames.SEARCH_ROUTE_FORM]) {
 
-      dispatch(formCache("SearchRouteForm", { 
-        ...getState().form["SearchRouteForm"], 
+      dispatch(formCache(formNames.SEARCH_ROUTE_FORM, { 
+        ...getState().form[formNames.SEARCH_ROUTE_FORM], 
         origin: response.data.directions.origin, 
         destination: response.data.directions.destination 
       }));

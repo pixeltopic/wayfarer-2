@@ -8,6 +8,7 @@ import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fe
 import BasicMap from "../common/GoogleMap/BasicMap";
 import Marker from "../common/GoogleMap/Marker";
 import PlacesResultsFilter from "./PlacesResultsFilter";
+import { formNames } from "../../utils";
 
 class PlacesResults extends Component {
 
@@ -90,7 +91,7 @@ class PlacesResults extends Component {
       avoidFerries: false, 
       avoidIndoor: false 
     }
-    this.props.formCache("SearchRouteForm", searchProps);
+    this.props.formCache(formNames.SEARCH_ROUTE_FORM, searchProps);
     this.setState(
       { disablePlaceButton: true }, 
       () => this.props.fetchDirections(searchProps, () => this.props.updateActiveDiscover("directions"))
@@ -210,8 +211,8 @@ const mapStateToProps = (state) => {
     nextPageToken: state.places.next_page_token,
     center: state.places.center,
     address: state.places.address,
-    placeFormData: state.form["SearchPlaceForm"] || {},
-    filterFormProps: state.form["PlacesResultsFilter"] || {}
+    placeFormData: state.form[formNames.SEARCH_PLACE_FORM] || {},
+    filterFormProps: state.form[formNames.PLACES_RESULTS_FILTER] || {}
   };
 }
 

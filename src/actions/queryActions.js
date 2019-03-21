@@ -4,6 +4,7 @@ import { updateToken } from "./authActions";
 import { fetchDirections } from "./mapsActions";
 import { fetchPlaces } from "./placesActions";
 import { formCache } from "./formActions";
+import { formNames } from "../utils";
 
 export const processQuery = (query, callback=null, callbackError=null) => async (dispatch, getState) => {
   // given a query for wit ai, gets processed response from server and calls other relevant dispatches.
@@ -56,7 +57,7 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPropSchema.destination = queryParams.destination;
       searchPropSchema.origin = queryParams.origin;
       
-      dispatch(formCache("SearchRouteForm", searchPropSchema)); // update form
+      dispatch(formCache(formNames.SEARCH_ROUTE_FORM, searchPropSchema)); // update form
       await dispatch(fetchDirections(searchPropSchema)); // wait for directions to fetch
       
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "directions" }); // update active discover panel
@@ -72,7 +73,7 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPropSchema.units = queryParams.units || "imperial";
       searchPropSchema.radius = queryParams.radius;
         
-      dispatch(formCache("SearchRouteForm", searchPropSchema));
+      dispatch(formCache(formNames.SEARCH_ROUTE_FORM, searchPropSchema));
       await dispatch(fetchDirections(searchPropSchema));
       
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "incidents" });
@@ -100,7 +101,7 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
       searchPlacePropSchema.keyword = queryParams.keyword;
       searchPlacePropSchema.units = queryParams.units;
       searchPlacePropSchema.radius = queryParams.radius;
-      dispatch(formCache("SearchPlaceForm", searchPlacePropSchema));
+      dispatch(formCache(formNames.SEARCH_PLACE_FORM, searchPlacePropSchema));
 
       await dispatch(fetchPlaces(searchPlacePropSchema));
       dispatch({ type: UPDATE_ACTIVE_DISCOVER, payload: "places" });

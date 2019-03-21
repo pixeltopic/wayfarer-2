@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Formik, Form, ErrorMessage } from "formik";
-import  { Button, Form as SemForm, Segment, Header, Icon, Message } from "semantic-ui-react";
+import  { Button, Form as SemForm, Segment, Header, Icon, Message, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
@@ -47,8 +47,7 @@ class Signup extends Component {
   }
 
   renderError = props => {
-    // console.log(props);
-    return <div style={{ color: "red" }}>{props.children}</div>;
+    return <div style={{ marginBottom: "5px" }}><Label basic color='red' pointing>{props.children}</Label></div>;
   }
 
   renderServerError = () => (

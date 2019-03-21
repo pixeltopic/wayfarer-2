@@ -1,6 +1,7 @@
 import server from "../api/server";
 import { updateToken } from "./authActions";
 import { formCache } from "./formActions";
+import { formNames } from "../utils";
 
 import { FETCH_PLACES, FETCH_PLACE_DETAILS, FETCH_MORE_PLACES } from "./types";
 
@@ -15,8 +16,8 @@ export const fetchPlaces = (searchProps, callback=null, callbackError=null) => a
     const response = await server.post("/api/fetchplaces", searchProps, getState().auth.authenticated ? config : null);
 
     dispatch({ type: FETCH_PLACES, payload: response.data });
-    if (response.data.places && response.data.places.address && getState().form["SearchPlaceForm"]) {
-      dispatch(formCache("SearchPlaceForm", { ...getState().form["SearchPlaceForm"], address: response.data.places.address }));
+    if (response.data.places && response.data.places.address && getState().form[formNames.SEARCH_PLACE_FORM]) {
+      dispatch(formCache(formNames.SEARCH_PLACE_FORM, { ...getState().form[formNames.SEARCH_PLACE_FORM], address: response.data.places.address }));
     }
     dispatch(updateToken(response));
 

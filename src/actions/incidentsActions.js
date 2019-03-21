@@ -1,5 +1,6 @@
 import server from "../api/server";
 import { updateToken } from "./authActions";
+import { formNames } from "../utils";
 
 import { FETCH_INCIDENTS } from "./types";
 
@@ -13,7 +14,7 @@ export const fetchIncidents = (callback=null) => async (dispatch, getState) => {
 
     const extraParams = {};
 
-    const discoverFormCache = getState().form["SearchRouteForm"];
+    const discoverFormCache = getState().form[formNames.SEARCH_ROUTE_FORM];
     if (discoverFormCache && discoverFormCache.radius && discoverFormCache.units) {
       extraParams.radius = discoverFormCache.radius;
       extraParams.units = discoverFormCache.units;

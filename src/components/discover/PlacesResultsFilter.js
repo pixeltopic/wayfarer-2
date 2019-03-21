@@ -4,6 +4,7 @@ import  { Form as SemForm, Select, Input, Button } from "semantic-ui-react";
 import _ from "lodash";
 
 import { formCache } from "../../actions";
+import { formNames } from "../../utils";
 
 class PlaceResultsFilter extends Component {
 
@@ -51,7 +52,7 @@ class PlaceResultsFilter extends Component {
 const ConnectedComponent = connect(null, { formCache })(PlaceResultsFilter);
 
 ConnectedComponent.defaultProps = {
-  formName: "PlacesResultsFilter",
+  formName: formNames.PLACES_RESULTS_FILTER
 };
 
 export default ConnectedComponent;

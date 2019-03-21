@@ -78,8 +78,8 @@ class CallToAction extends Component {
   );
 
   renderError = props => {
-    // console.log(props);
-    return <div style={{ color: "red" }}>{props.children}</div>;
+    // Unused method
+    return <div><Label basic color='red' pointing>{props.children}</Label></div>;
   }
 
   renderServerError = () => {

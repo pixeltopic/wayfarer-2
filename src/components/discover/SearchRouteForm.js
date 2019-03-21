@@ -6,6 +6,7 @@ import * as Yup from "yup";
 
 import SemField from "../helpers/SemanticField";
 import { fetchDirections, formCache } from "../../actions";
+import { formNames } from "../../utils";
 
 const modeSelect = [
   { value: "driving", text: "Driving" },
@@ -228,7 +229,7 @@ const mapStateToProps = (state, ownProps) => {
 const ConnectedSearchRouteForm = connect(mapStateToProps, { fetchDirections, formCache })(SearchRouteForm);
 
 ConnectedSearchRouteForm.defaultProps = {
-  formName: "SearchRouteForm"
+  formName: formNames.SEARCH_ROUTE_FORM
 };
 
 export default ConnectedSearchRouteForm;

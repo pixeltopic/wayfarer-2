@@ -36,8 +36,8 @@ export const fetchMorePlaces = (callback=null, callbackError=null) => async (dis
       headers : { authorization: getState().auth.authenticated }  
     };
 
-    if (getState().places.next_page_token) {
-      const response = await server.post("/api/fetchplaces", { next_page_token: getState().places.next_page_token }, getState().auth.authenticated ? config : null);
+    if (getState().places.nextPageToken) {
+      const response = await server.post("/api/fetchplaces/token", { nextPageToken: getState().places.nextPageToken }, getState().auth.authenticated ? config : null);
       dispatch({ type: FETCH_MORE_PLACES, payload: response.data });
       dispatch(updateToken(response));
     }
@@ -59,7 +59,7 @@ export const fetchPlaceDetails = (place_id, callback=null, callbackError=null) =
     };
 
     if (place_id === getState().places.cachedPlaceDetailsId) {
-      console.log("Memoized place details loaded");
+      console.log("Cached place details loaded");
       if (callback) callback();
       return;
     }

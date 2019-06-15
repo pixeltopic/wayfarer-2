@@ -208,7 +208,7 @@ class PlacesResults extends Component {
 const mapStateToProps = (state) => {
   return { 
     places: state.places.results,
-    nextPageToken: state.places.next_page_token,
+    nextPageToken: state.places.nextPageToken,
     center: state.places.center,
     address: state.places.address,
     placeFormData: state.form[formNames.SEARCH_PLACE_FORM] || {},

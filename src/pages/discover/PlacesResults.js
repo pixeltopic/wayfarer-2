@@ -5,8 +5,8 @@ import { getDistance } from "geolib";
 import _ from "lodash";
 
 import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../actions";
-import BasicMap from "../common/GoogleMap/BasicMap";
-import Marker from "../common/GoogleMap/Marker";
+import BasicMap from "../../components/GoogleMap/BasicMap";
+import Marker from "../../components/GoogleMap/Marker";
 import PlacesResultsFilter from "./PlacesResultsFilter";
 import { formNames } from "../../utils";
 

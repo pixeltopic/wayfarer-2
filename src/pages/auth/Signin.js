@@ -5,10 +5,10 @@ import  { Button, Form as SemForm, Segment, Header, Icon, Message, Label } from 
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { signin, resetAuthMessage } from "../../actions";
 import history from "../../history";
-import requireNoAuth from "../helpers/hocs/requireNoAuth";
+import requireNoAuth from "../../components/hocs/requireNoAuth";
 
 class Signin extends Component {
 

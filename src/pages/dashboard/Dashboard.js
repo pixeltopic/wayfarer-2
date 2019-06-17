@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import requireAuth from "../helpers/hocs/requireAuth";
+import requireAuth from "../../components/hocs/requireNoAuth";
 
 class Dashboard extends Component {
 

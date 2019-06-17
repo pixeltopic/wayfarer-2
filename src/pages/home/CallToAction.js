@@ -5,7 +5,7 @@ import  { Button, Form as SemForm, Header, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { formCache, processQuery } from "../../actions";
 import history from "../../history";
 import { routes } from "../../utils";

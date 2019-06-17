@@ -5,23 +5,19 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { Router, Route, Switch } from "react-router-dom";
 import thunk from 'redux-thunk';
 
-import App from "./components/App";
+import Layout from "./components/Layout";
 import history from "./history";
 import reducers from "./reducers";
 
 import { routes } from "./utils";
 
-import Home from "./components/home/Home";
-import Discover from "./components/discover/Discover";
-import Dashboard from "./components/dashboard/Dashboard";
-import Signup from "./components/auth/Signup";
-import Signin from "./components/auth/Signin";
-import Signout from "./components/auth/Signout";
-import NotFound from "./components/common/NotFound";
-
-// cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\client
-// cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
-
+import Home from "./pages/home/Home";
+import Discover from "./pages/discover/Discover";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Signup from "./pages/auth/Signup";
+import Signin from "./pages/auth/Signin";
+import Signout from "./pages/auth/Signout";
+import NotFound from "./components/NotFound";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -46,7 +42,7 @@ const store = createStore(
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <App>
+      <Layout>
         <Switch>
           <Route path={routes.HOME} exact component={Home} />
           <Route path={routes.SIGNIN} exact component={Signin} />
@@ -56,7 +52,7 @@ ReactDOM.render(
           <Route path={routes.DASHBOARD} exact component={Dashboard} />
           <Route component={NotFound} />
         </Switch>
-      </App>
+      </Layout>
     </Router>
   </Provider>,
   document.querySelector('#root')

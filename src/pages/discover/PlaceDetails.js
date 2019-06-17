@@ -2,8 +2,8 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Tab, Card, Button, Item, Rating, Label, List, Divider, Grid } from "semantic-ui-react";
 
-import BasicMap from "../common/GoogleMap/BasicMap";
-import Marker from "../common/GoogleMap/Marker";
+import BasicMap from "../../components/GoogleMap/BasicMap";
+import Marker from "../../components/GoogleMap/Marker";
 
 import { updateActiveDiscover } from "../../actions";
 

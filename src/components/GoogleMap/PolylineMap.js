@@ -3,7 +3,7 @@ import GoogleMap from "google-map-react";
 import { connect } from "react-redux";
 
 import Marker from "./Marker";
-import { geolocationUtils } from "../../../utils";
+import { geolocationUtils } from "../../utils";
 
 class PolylineMap extends Component {
 

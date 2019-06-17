@@ -5,7 +5,7 @@ import  { Button, Form as SemForm, Select, Menu, Message, Dropdown, Input, Label
 import * as Yup from "yup";
 import _ from "lodash";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { fetchPlaces, formCache } from "../../actions";
 import { formNames } from "../../utils";
 

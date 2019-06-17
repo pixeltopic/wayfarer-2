@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { Menu, Icon, Dropdown } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 
-import history from "../../history";
-import { routes } from "../../utils";
+import history from "../history";
+import { routes } from "../utils";
 
 class Navbar extends Component {
 

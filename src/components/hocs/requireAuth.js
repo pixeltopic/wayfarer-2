@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import history from "../../../history";
-import { verifyToken, verifyInactiveToken,routes } from "../../../utils";
-import { refreshToken } from "../../../actions";
+import history from "../../history";
+import { verifyToken, verifyInactiveToken,routes } from "../../utils";
+import { refreshToken } from "../../actions";
 
 // HOC to prevent access of component unless authenticated
 

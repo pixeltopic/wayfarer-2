@@ -107,7 +107,6 @@ class Marker extends Component {
       mode: "driving", 
       altRoutes: false, 
       units: "imperial",
-      radius: null,
       avoidTolls: false, 
       avoidHighways: false, 
       avoidFerries: false, 

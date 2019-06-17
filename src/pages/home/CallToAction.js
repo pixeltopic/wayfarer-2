@@ -107,7 +107,7 @@ class CallToAction extends Component {
             {/* <ErrorMessage name="command" component={this.renderError} /> */}
           </SemForm.Group>
         </MediaQuery>
-        <MediaQuery maxWidth={630}>
+        <MediaQuery maxWidth={629}>
           <SemForm.Group>
             <SemField 
               type="text" 

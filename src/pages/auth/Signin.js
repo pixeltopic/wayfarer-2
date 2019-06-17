@@ -24,7 +24,7 @@ class Signin extends Component {
 
     this.props.signin(
       values, 
-      () => () => history.push("/"), 
+      () => history.push("/"), 
       () => this.setState({ disableButton: false })
     );
     actions.setSubmitting(false);
@@ -88,7 +88,7 @@ class Signin extends Component {
             {this.renderForm(props)}
           </div>
         </MediaQuery>
-        <MediaQuery maxWidth={700}>
+        <MediaQuery maxWidth={699}>
           <div style={{ width: "80%", margin: "auto", padding: "70px 0" }}>
             {this.renderForm(props)}
           </div>

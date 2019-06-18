@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Icon, Item, Tab, Header, Divider, Card, Label } from "semantic-ui-react";
 
-import PolylineMap from "../../components/GoogleMap/PolylineMap";
+import PolylineMap from "../../../components/GoogleMap/PolylineMap";
 
 class DirectionSteps extends Component {
 

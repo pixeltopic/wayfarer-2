@@ -4,11 +4,11 @@ import { Header, Card, Divider, Button, Icon } from "semantic-ui-react";
 import { getDistance } from "geolib";
 import _ from "lodash";
 
-import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../actions";
-import BasicMap from "../../components/GoogleMap/BasicMap";
-import Marker from "../../components/GoogleMap/Marker";
+import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../../actions";
+import BasicMap from "../../../components/GoogleMap/BasicMap";
+import Marker from "../../../components/GoogleMap/Marker";
 import PlacesResultsFilter from "./PlacesResultsFilter";
-import { formNames } from "../../utils";
+import { formNames } from "../../../utils";
 
 class PlacesResults extends Component {
 

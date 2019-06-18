@@ -11,9 +11,9 @@ import reducers from "./reducers";
 
 import { routes } from "./utils";
 
-import Home from "./pages/home/Home";
-import Discover from "./pages/discover/Discover";
-import Dashboard from "./pages/dashboard/Dashboard";
+import Home from "./pages/Home";
+import Discover from "./pages/Discover";
+import Dashboard from "./pages/Dashboard"
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import Signout from "./pages/auth/Signout";

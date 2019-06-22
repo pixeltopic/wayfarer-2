@@ -5,10 +5,10 @@ import  { Button, Form as SemForm, Segment, Header, Icon, Message, Label } from 
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { signin, resetAuthMessage } from "../../actions";
 import history from "../../history";
-import requireNoAuth from "../helpers/hocs/requireNoAuth";
+import requireNoAuth from "../../components/hocs/requireNoAuth";
 
 class Signin extends Component {
 
@@ -24,7 +24,7 @@ class Signin extends Component {
 
     this.props.signin(
       values, 
-      () => () => history.push("/"), 
+      () => history.push("/"), 
       () => this.setState({ disableButton: false })
     );
     actions.setSubmitting(false);
@@ -88,7 +88,7 @@ class Signin extends Component {
             {this.renderForm(props)}
           </div>
         </MediaQuery>
-        <MediaQuery maxWidth={700}>
+        <MediaQuery maxWidth={699}>
           <div style={{ width: "80%", margin: "auto", padding: "70px 0" }}>
             {this.renderForm(props)}
           </div>

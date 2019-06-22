@@ -4,11 +4,11 @@ import { Header, Card, Divider, Button, Icon } from "semantic-ui-react";
 import { getDistance } from "geolib";
 import _ from "lodash";
 
-import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../actions";
-import BasicMap from "../common/GoogleMap/BasicMap";
-import Marker from "../common/GoogleMap/Marker";
+import { fetchPlaceDetails, updateActiveDiscover, fetchDirections, formCache, fetchMorePlaces } from "../../../actions";
+import BasicMap from "../../../components/GoogleMap/BasicMap";
+import Marker from "../../../components/GoogleMap/Marker";
 import PlacesResultsFilter from "./PlacesResultsFilter";
-import { formNames } from "../../utils";
+import { formNames } from "../../../utils";
 
 class PlacesResults extends Component {
 
@@ -85,7 +85,6 @@ class PlacesResults extends Component {
       mode: "driving", 
       altRoutes: false, 
       units: "imperial",
-      radius: null,
       avoidTolls: false, 
       avoidHighways: false, 
       avoidFerries: false, 
@@ -208,7 +207,7 @@ class PlacesResults extends Component {
 const mapStateToProps = (state) => {
   return { 
     places: state.places.results,
-    nextPageToken: state.places.next_page_token,
+    nextPageToken: state.places.nextPageToken,
     center: state.places.center,
     address: state.places.address,
     placeFormData: state.form[formNames.SEARCH_PLACE_FORM] || {},

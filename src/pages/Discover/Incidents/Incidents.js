@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import { Item, Tab, Message, Icon, Menu, Card, Divider, Header, Dimmer, Loader } from "semantic-ui-react";
 import _ from "lodash";
 
-import { fetchIncidents } from "../../actions";
-import { ImpactingLabel, IncidentLabel } from "../helpers/IncidentLabels";
-import PolylineMap from "../common/GoogleMap/PolylineMap";
-import Marker from "../common/GoogleMap/Marker";
+import { fetchIncidents } from "../../../actions";
+import { ImpactingLabel, IncidentLabel } from "../../../components/helpers/IncidentLabels";
+import PolylineMap from "../../../components/GoogleMap/PolylineMap";
+import Marker from "../../../components/GoogleMap/Marker";
 
 class Incidents extends Component {
   // note: this component should only be rendered after this.props.maps.routes is not null/empty

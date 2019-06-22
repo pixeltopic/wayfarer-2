@@ -3,8 +3,8 @@ import { connect } from "react-redux"
 import  { Form as SemForm, Select, Input, Button } from "semantic-ui-react";
 import _ from "lodash";
 
-import { formCache } from "../../actions";
-import { formNames } from "../../utils";
+import { formCache } from "../../../actions";
+import { formNames } from "../../../utils";
 
 class PlaceResultsFilter extends Component {
 

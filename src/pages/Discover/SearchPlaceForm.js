@@ -3,8 +3,9 @@ import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Select, Menu, Message, Dropdown, Input, Label } from "semantic-ui-react";
 import * as Yup from "yup";
+import _ from "lodash";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { fetchPlaces, formCache } from "../../actions";
 import { formNames } from "../../utils";
 
@@ -54,10 +55,16 @@ class SearchPlaceForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log({ ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}});
+
+    const payload = _.omit(
+      { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}},
+      ["useCurrentLocation"]
+    )
+
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchPlaces(
-        { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
+        payload, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
         (payload) => this.setState({ disableButton: false, errorMessage: payload })
       )

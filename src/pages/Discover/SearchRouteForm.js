@@ -3,8 +3,9 @@ import { connect } from "react-redux"
 import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Select, Menu, Message, Input, Dropdown, Label } from "semantic-ui-react";
 import * as Yup from "yup";
+import _ from "lodash";
 
-import SemField from "../helpers/SemanticField";
+import SemField from "../../components/helpers/SemanticField";
 import { fetchDirections, formCache } from "../../actions";
 import { formNames } from "../../utils";
 
@@ -39,16 +40,28 @@ class SearchRouteForm extends Component {
 
   onSubmit = (values, actions) => {
     console.log(values);
+
+    let omittedKeys = ["useCurrentLocation", "radius"];
+
+    // if (!values.radius) {
+    //   omittedKeys.push("radius");
+    // }
+
+    const payload = _.omit({ 
+      ...values, 
+      ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}
+    }, omittedKeys);
+
     this.setState(
       { disableButton: true }, 
       () => this.props.fetchDirections(
-        { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }}}, 
+        payload, 
         () => this.setState({ disableButton: false, errorMessage: "" }),
         (payload) => this.setState({ disableButton: false, errorMessage: payload }),
-        () => this.props.formCache(this.props.formName, values)
+        () => this.props.formCache(this.props.formName, { ...values, ...this.state.locationEnabled && values.useCurrentLocation && { currentLocation: { lat: this.state.lat, lng: this.state.lng }} })
       )
     );
-    // this.props.formCache(this.props.formName, values); // caches form on submit
+    
     actions.setSubmitting(false);
   }
 

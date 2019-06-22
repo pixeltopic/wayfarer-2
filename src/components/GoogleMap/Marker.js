@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Icon, Popup, Card, Button } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { formCache, updateActiveDiscover, fetchPlaceDetails, fetchDirections } from "../../../actions";
-import { formNames } from "../../../utils";
+import { formCache, updateActiveDiscover, fetchPlaceDetails, fetchDirections } from "../../actions";
+import { formNames } from "../../utils";
 
 class Marker extends Component {
 
@@ -107,7 +107,6 @@ class Marker extends Component {
       mode: "driving", 
       altRoutes: false, 
       units: "imperial",
-      radius: null,
       avoidTolls: false, 
       avoidHighways: false, 
       avoidFerries: false, 

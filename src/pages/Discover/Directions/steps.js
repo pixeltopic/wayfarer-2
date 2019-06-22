@@ -1,23 +1,11 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Icon, Item, Tab, Header, Divider, Card, Label } from "semantic-ui-react";
+import React from "react";
+import { Icon, Item, Header, Divider, Card, Label } from "semantic-ui-react";
 
-import PolylineMap from "../common/GoogleMap/PolylineMap";
+import PolylineMap from "../../../components/GoogleMap/PolylineMap";
 
-class DirectionSteps extends Component {
-
-  state = { activeIndex: 0 };
-
-  componentDidUpdate() {
-    if (this.state.activeIndex !== 0 && this.state.activeIndex > this.props.routes.length-1) {
-      // console.log(`activeIndex: ${this.state.activeIndex}`)
-      this.setState({ activeIndex: 0 });
-    }
-  }
-
-  renderSteps = () => {
-    const labelStyle = { border: "none", margin: "0 0 0 0", padding: "0 3px 0 3px" };
-    const routeSteps = this.props.routes.map((route, key) => {
+const steps = routes => {
+  const labelStyle = { border: "none", margin: "0 0 0 0", padding: "0 3px 0 3px" };
+    const routeSteps = routes.map((route, key) => {
       const stepArray = route["legs"]["0"]["steps"].map((step, key) => {
         return (
           <Item key={key}>
@@ -66,44 +54,6 @@ class DirectionSteps extends Component {
     });
 
     return routeSteps;
-  }
-
-  handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex });
-
-  renderTabs = () => {
-    const routeContents = this.renderSteps();
-
-    const panes = routeContents.map((content, routeNum) => {
-      return { menuItem: `Route ${routeNum+1}`, render: () => <Tab.Pane as={Card} fluid>{content}</Tab.Pane>};
-    })
-
-    return (
-      <Tab 
-        menu={{ pointing: true }} 
-        activeIndex={this.state.activeIndex}
-        onTabChange={this.handleTabChange} 
-        panes={panes} 
-      />
-    );
-  }
-
-  render() {
-    if (!this.props.routes) {
-      return null;
-    }
-    console.log("Component re-rendered");
-    return (
-      <div>
-        
-          {this.renderTabs()}
-        
-      </div>
-    );
-  }
 }
 
-const mapStateToProps = state => {
-  return { routes: state.maps.routes };
-}
-
-export default connect(mapStateToProps)(DirectionSteps);
+export default steps;

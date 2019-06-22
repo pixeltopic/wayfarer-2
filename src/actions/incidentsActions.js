@@ -1,3 +1,4 @@
+import _ from "lodash";
 import server from "../api/server";
 import { updateToken } from "./authActions";
 import { formNames } from "../utils";
@@ -12,19 +13,23 @@ export const fetchIncidents = (callback=null) => async (dispatch, getState) => {
       headers : { authorization: getState().auth.authenticated }  
     };
 
-    const extraParams = {};
+    let extraParams = {};
 
     const discoverFormCache = getState().form[formNames.SEARCH_ROUTE_FORM];
-    if (discoverFormCache && discoverFormCache.radius && discoverFormCache.units) {
+    if (discoverFormCache && discoverFormCache.radius) {
       extraParams.radius = discoverFormCache.radius;
-      extraParams.units = discoverFormCache.units;
     }
 
     console.log("Extra params:", extraParams);
-    
+
+    let omittedKeys = ["useCurrentLocation", "radius"];
+
     const response = await server.post(
       "/api/fetchincidents", 
-      getState().maps.routes ? { routes: getState().maps.routes, extraParams } : null, 
+      discoverFormCache ? { 
+        directionSearchParams: _.omit(discoverFormCache, omittedKeys), 
+        ...extraParams.radius && { extraParams } 
+      } : null, 
       getState().auth.authenticated ? config : null
     );
 

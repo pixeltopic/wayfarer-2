@@ -5,10 +5,10 @@ import { Grid, Menu, Container } from "semantic-ui-react";
 import { updateActiveDiscover } from "../../actions";
 import SearchRouteForm from "./SearchRouteForm";
 import SearchPlaceForm from "./SearchPlaceForm";
-import DirectionSteps from "./DirectionSteps";
-import Incidents from "./Incidents";
-import PlacesResults from "./PlacesResults";
-import PlaceDetails from "./PlaceDetails";
+import DirectionSteps from "./Directions/DirectionSteps";
+import Incidents from "./Incidents/Incidents";
+import PlacesResults from "./Places/PlacesResults";
+import PlaceDetails from "./Places/PlaceDetails";
 import SearchPlaceholder from "./SearchPlaceholder";
 import Legend from "./Legend";
 

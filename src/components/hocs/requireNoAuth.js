@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import history from "../../../history";
+import history from "../../history";
 
 // HOC to prevent access of component unless authenticated
 

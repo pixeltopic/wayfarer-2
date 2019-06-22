@@ -5,7 +5,7 @@ import { Grid, Menu, Container } from "semantic-ui-react";
 import { updateActiveDiscover } from "../../actions";
 import SearchRouteForm from "./SearchRouteForm";
 import SearchPlaceForm from "./SearchPlaceForm";
-import DirectionSteps from "./Directions/DirectionSteps";
+import Directions from "./Directions";
 import Incidents from "./Incidents/Incidents";
 import PlacesResults from "./Places/PlacesResults";
 import PlaceDetails from "./Places/PlaceDetails";
@@ -38,7 +38,7 @@ class Discover extends Component {
         } else if (this.props.routes.length === 0) {
           return <SearchPlaceholder error />;
         } else {
-          return <DirectionSteps />;
+          return <Directions />;
         }  
       case "incidents":
         if (this.props.routes === undefined) {

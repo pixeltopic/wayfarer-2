@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import Tabs from "./Tabs";
 
-class DirectionSteps extends Component {
+class Directions extends Component {
   state = { activeIndex: 0 };
 
   componentDidUpdate() {
@@ -37,4 +37,4 @@ const mapStateToProps = state => {
   return { routes: state.maps.routes };
 };
 
-export default connect(mapStateToProps)(DirectionSteps);
+export default connect(mapStateToProps)(Directions);

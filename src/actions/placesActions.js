@@ -1,5 +1,4 @@
 import server from "../api/server";
-import { updateToken } from "./authActions";
 import { formCache } from "./formActions";
 import { formNames } from "../utils";
 
@@ -19,13 +18,12 @@ export const fetchPlaces = (searchProps, callback=null, callbackError=null) => a
     if (response.data.places && response.data.places.address && getState().form[formNames.SEARCH_PLACE_FORM]) {
       dispatch(formCache(formNames.SEARCH_PLACE_FORM, { ...getState().form[formNames.SEARCH_PLACE_FORM], address: response.data.places.address }));
     }
-    dispatch(updateToken(response));
 
     if (callback) callback();
 
   } catch(e) {
     console.log(e);
-    const payload = e.response ? e.response.data.error : null;
+    const payload = e.response ? e.response.data.message : null;
     if (callbackError) callbackError(payload || "There was an error with the server.");
   }
 }
@@ -39,14 +37,13 @@ export const fetchMorePlaces = (callback=null, callbackError=null) => async (dis
     if (getState().places.nextPageToken) {
       const response = await server.post("/api/fetchplaces/token", { nextPageToken: getState().places.nextPageToken }, getState().auth.authenticated ? config : null);
       dispatch({ type: FETCH_MORE_PLACES, payload: response.data });
-      dispatch(updateToken(response));
     }
 
     if (callback) callback();
 
   } catch(e) {
     console.log(e);
-    const payload = e.response ? e.response.data.error : null;
+    const payload = e.response ? e.response.data.message : null;
     if (callbackError) callbackError(payload || "There was an error with the server.");
   }
 }
@@ -67,13 +64,12 @@ export const fetchPlaceDetails = (place_id, callback=null, callbackError=null) =
     const response = await server.post("/api/fetchplacedetails", { place_id }, getState().auth.authenticated ? config : null);
 
     dispatch({ type: FETCH_PLACE_DETAILS, payload: response.data });
-    dispatch(updateToken(response));
 
     if (callback) callback();
 
   } catch(e) {
     console.log(e);
-    const payload = e.response ? e.response.data.error : null;
+    const payload = e.response ? e.response.data.message : null;
     if (callbackError) callbackError(payload || "There was an error with the server.");
   }
 }

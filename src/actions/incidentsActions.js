@@ -1,6 +1,5 @@
 import _ from "lodash";
 import server from "../api/server";
-import { updateToken } from "./authActions";
 import { formNames } from "../utils";
 
 import { FETCH_INCIDENTS } from "./types";
@@ -34,7 +33,6 @@ export const fetchIncidents = (callback=null) => async (dispatch, getState) => {
     );
 
     dispatch({ type: FETCH_INCIDENTS, payload: response.data });
-    dispatch(updateToken(response));
 
     if (callback) callback();
     

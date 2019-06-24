@@ -1,5 +1,6 @@
 import store from "../store";
-import { refreshToken } from "../actions";
+import { updateToken } from "../actions";
+import { AUTH_REFRESHING_TOKEN, AUTH_REFRESHING_CALL } from "../actions/types";
 import server from "./server";
 
 const isHandlerEnabled = (config = {}) => {
@@ -13,6 +14,40 @@ export const successHandler = response => {
   return response;
 };
 
+
+
+const refreshToken = () =>  {
+  // attempts to refresh a token with current user's token and updates global state accordingly.
+  try {
+
+    const config = { 
+      headers : { authorization: store.getState().auth.authenticated }  
+    };
+    
+
+    if (store.getState().auth.refreshingToken) {
+      return store.getState().auth.refreshingCall;
+    }
+
+    store.dispatch({ type: AUTH_REFRESHING_TOKEN, payload: true });
+  
+    const refreshingCall = server.post("/api/refreshtoken", null, store.getState().auth.authenticated ? config : null).then(({ data: { token } }) => {
+        store.dispatch(updateToken(token || ""));
+        store.dispatch({ type: AUTH_REFRESHING_TOKEN, payload: false });
+        store.dispatch({ type: AUTH_REFRESHING_CALL, payload: null });
+        return Promise.resolve(true);
+    });
+
+    store.dispatch({ type: AUTH_REFRESHING_CALL, payload: refreshingCall });
+    
+    return refreshingCall;
+
+  } catch(e) {
+    console.log(e);
+  }
+}
+
+
 export const errorHandler = async error => {
   console.log("error handler");
 
@@ -25,20 +60,12 @@ export const errorHandler = async error => {
   }
 
   if (statusCode === 401) {
-    if (!store.getState().auth.refreshingToken) {
-      console.log("Attempting to refresh token");
-      await store.dispatch(refreshToken());
-    }
-
-    const refreshedToken = store.getState().auth.authenticated;
-
-    originalRequest.headers["authorization"] = refreshedToken;
-    originalRequest.baseURL = undefined;
-
-    // if (!refreshedToken)
-    //   return error;
-
-    return server.request(originalRequest);
+    return refreshToken().then(_ => {
+      const refreshedToken = store.getState().auth.authenticated;
+      originalRequest.headers["authorization"] = refreshedToken;
+      originalRequest.baseURL = undefined;
+      return server.request(originalRequest);
+    });
   }
 
   return Promise.reject(error);

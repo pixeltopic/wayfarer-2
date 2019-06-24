@@ -7,7 +7,11 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,
   {
-    auth: { authenticated: localStorage.getItem("token") || "", refreshingToken: false }
+    auth: {
+      authenticated: localStorage.getItem("token") || "",
+      refreshingToken: false,
+      refreshingCall: null
+    }
   },
   composeEnhancers(applyMiddleware(thunk))
 );

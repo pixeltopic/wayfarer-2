@@ -15,11 +15,11 @@ class Incidents extends Component {
 
   updateOnRouteChange = () => {
     // whenever the data in this.props.routes changes, function is called to show necessary loading screen and updated data
+    console.log("Component rerendered.");
     this.setState(
-      { loading: true }, 
+      { loading: true, cached: this.props.routes }, 
       () => this.props.fetchIncidents(() => this.setState({ loading: false }))
     );
-    this.setState({ cached: this.props.routes });
   }
 
   componentDidMount() {

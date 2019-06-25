@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from "../../history";
 // import { verifyToken, verifyInactiveToken,routes } from "../../utils";
-import { refreshToken } from "../../actions";
+// import { refreshToken } from "../../actions";
 
 // HOC to prevent access of component unless authenticated
 
@@ -42,5 +42,5 @@ export default ChildComponent => {
   function mapStateToProps(state) {
     return { auth: state.auth.authenticated };
   }
-  return connect(mapStateToProps, { refreshToken })(ComposedComponent);
+  return connect(mapStateToProps)(ComposedComponent);
 };

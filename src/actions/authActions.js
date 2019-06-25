@@ -1,6 +1,6 @@
 import server from "../api/server";
 
-import { AUTH_USER, AUTH_ERROR, AUTH_ERROR_RESET, AUTH_REFRESHING_TOKEN } from "./types";
+import { AUTH_USER, AUTH_ERROR, AUTH_ERROR_RESET } from "./types";
 
 export const signup = ({ email, password }, callback=null, callbackError=null) => async dispatch => {
   // accepts an email and password; signs up/authenticates user and updates global state w/ token if valid.
@@ -59,27 +59,4 @@ export const updateToken = token => dispatch => {
   localStorage.setItem("token", token);
   dispatch({ type: AUTH_USER, payload: token }); 
   console.log("Token updated.");
-}
-
-export const refreshToken = () => async (dispatch, getState) => {
-  // attempts to refresh a token with current user's token and updates global state accordingly.
-  try {
-
-    const config = { 
-      headers : { authorization: getState().auth.authenticated }  
-    };
-    dispatch({ type: AUTH_REFRESHING_TOKEN, payload: true });
-
-    const response = await server.post("/api/refreshtoken", null, getState().auth.authenticated ? config : null);
-
-    if (response.data && response.data.token)
-      dispatch(updateToken(response.data.token));
-    else
-      dispatch(updateToken(""));
-
-    dispatch({ type: AUTH_REFRESHING_TOKEN, payload: false });
-
-  } catch(e) {
-    console.log(e);
-  }
 }

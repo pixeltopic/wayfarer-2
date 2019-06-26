@@ -1,5 +1,4 @@
 import server from "../api/server";
-import { updateToken } from "./authActions";
 import { formCache } from "./formActions";
 import { formNames } from "../utils";
 
@@ -27,13 +26,12 @@ export const fetchDirections = (searchProps, callbackFinal=null, callbackError=n
         destination: response.data.directions.destination 
       }));
     }
-    dispatch(updateToken(response));
 
     if (callbackFinal) callbackFinal();
 
   } catch(e) {
     console.log(e);
-    const payload = e.response ? e.response.data.error : null;
+    const payload = e.response ? e.response.data.message : null;
     if (callbackError) callbackError(payload || "There was an error with the server.");
   }
 }

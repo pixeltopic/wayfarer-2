@@ -1,6 +1,8 @@
 export const AUTH_ERROR = "auth_error";
 export const AUTH_ERROR_RESET = "auth_error_reset";
 export const AUTH_USER = "auth_user";
+export const AUTH_REFRESHING_TOKEN = "auth_refreshing_token";
+export const AUTH_REFRESHING_CALL = "auth_refreshing_call";
 
 export const FETCH_DIRECTIONS = "fetch_directions";
 export const FETCH_INCIDENTS = "fetch_incidents";

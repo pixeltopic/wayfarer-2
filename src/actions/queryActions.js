@@ -1,6 +1,5 @@
 import { UPDATE_ACTIVE_DISCOVER } from "./types";
 import server from "../api/server";
-import { updateToken } from "./authActions";
 import { fetchDirections } from "./mapsActions";
 import { fetchPlaces } from "./placesActions";
 import { formCache } from "./formActions";
@@ -110,17 +109,12 @@ export const processQuery = (query, callback=null, callbackError=null) => async 
 
       return;
     }
-    
-      
-    
-
-    dispatch(updateToken(response));
 
     if (callback) callback();
 
   } catch(e) {
     console.log(e);
-    const payload = e.response ? e.response.data.error : null;
+    const payload = e.response ? e.response.data.message : null;
     if (callbackError) callbackError(payload || "There was an error with the server.");
   }
 }

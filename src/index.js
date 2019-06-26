@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { Router, Route, Switch } from "react-router-dom";
-import thunk from 'redux-thunk';
 
+import { Router, Route, Switch } from "react-router-dom";
+
+import store from "./store";
 import Layout from "./components/Layout";
 import history from "./history";
-import reducers from "./reducers";
 
 import { routes } from "./utils";
 
@@ -18,26 +17,6 @@ import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import Signout from "./pages/auth/Signout";
 import NotFound from "./components/NotFound";
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-// const checkToken = () => {
-//   const token = localStorage.getItem("token");
-//   if (verifyToken(token)) {
-//     return token;
-//   } else {
-//     localStorage.removeItem("token");
-//     return "";
-//   }
-// }
-const store = createStore(
-  reducers, 
-  {
-    auth: { authenticated: localStorage.getItem("token") }
-  }, 
-  composeEnhancers(applyMiddleware(thunk))
-);
-
 
 ReactDOM.render(
   <Provider store={store}>

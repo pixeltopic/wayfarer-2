@@ -2,11 +2,11 @@ import server from "../api/server";
 
 import { AUTH_USER, AUTH_ERROR, AUTH_ERROR_RESET } from "./types";
 
-export const signup = ({ email, password }, callback=null, callbackError=null) => async dispatch => {
+export const signup = ({ email, password, recaptcha }, callback=null, callbackError=null) => async dispatch => {
   // accepts an email and password; signs up/authenticates user and updates global state w/ token if valid.
   // If invalid (eg. email already used) sends an error message to the `error` reducer
   try {
-    const response = await server.post(`/api/signup`, { email, password });
+    const response = await server.post(`/api/signup`, { email, password }, { headers: { recaptcha }});
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_ERROR, payload: "" });
     localStorage.setItem("token", response.data.token);
@@ -22,11 +22,11 @@ export const signup = ({ email, password }, callback=null, callbackError=null) =
   }
 }
 
-export const signin = ({ email, password }, callback=null, callbackError=null) => async dispatch => {
+export const signin = ({ email, password, recaptcha }, callback=null, callbackError=null) => async dispatch => {
   // accepts an email and password; authenticates user and updates global state w/ token if valid.
   // If invalid (eg. email already used) sends an error message to the `error` reducer
   try {
-    const response = await server.post(`/api/signin`, { email, password }, { handlerEnabled: false });
+    const response = await server.post(`/api/signin`, { email, password }, { handlerEnabled: false, headers: { recaptcha } });
     dispatch({ type: AUTH_USER, payload: response.data.token });
     dispatch({ type: AUTH_ERROR, payload: "" });
     localStorage.setItem("token", response.data.token);

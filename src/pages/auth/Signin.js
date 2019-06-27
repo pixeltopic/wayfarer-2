@@ -4,6 +4,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Segment, Header, Icon, Message, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
+import Recaptcha from "../../components/Recaptcha";
 
 import SemField from "../../components/helpers/SemanticField";
 import { signin, resetAuthMessage } from "../../actions";
@@ -33,7 +34,8 @@ class Signin extends Component {
   validateSchema = () => (
     Yup.object().shape({ 
       email: Yup.string().required("You need an email!"),
-      password: Yup.string().required("You need a password!")
+      password: Yup.string().required("You need a password!"),
+      recaptcha: Yup.string().required("Please confirm you're not a robot!")
     })
   );
 
@@ -48,7 +50,7 @@ class Signin extends Component {
     </Message>
   );
 
-  renderForm = ({ isSubmitting }) => {
+  renderForm = ({ isSubmitting, setFieldValue }) => {
     return (
       <Segment stacked padded="very">
         <div style={{ textAlign: "center" }}>
@@ -62,6 +64,14 @@ class Signin extends Component {
           <ErrorMessage name="email" component={this.renderError} />
           <SemField type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="password" placeholder="password" />
           <ErrorMessage name="password" component={this.renderError} />
+          <Recaptcha
+            onloadCallback={() => console.log("recaptcha loaded")}
+            verifyCallback={response => setFieldValue("recaptcha", response)}
+            expiredCallback={() => setFieldValue("recaptcha", "")}
+            center={true}
+          >
+            <ErrorMessage name="recaptcha" component={this.renderError} />
+          </Recaptcha>
           
           <Button 
             type="submit" 
@@ -102,7 +112,7 @@ class Signin extends Component {
     return (
       <Formik 
         render={this.renderWithQuery}
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", recaptcha: "" }}
         validationSchema={this.validateSchema}
         onSubmit={this.onSubmit}
       />

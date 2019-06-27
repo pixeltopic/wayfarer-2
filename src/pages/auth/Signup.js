@@ -4,6 +4,7 @@ import { Formik, Form, ErrorMessage } from "formik";
 import  { Button, Form as SemForm, Segment, Header, Icon, Message, Label } from "semantic-ui-react";
 import * as Yup from "yup";
 import MediaQuery from "react-responsive";
+import Recaptcha from "../../components/Recaptcha";
 
 import SemField from "../../components/helpers/SemanticField";
 import { signup, resetAuthMessage } from "../../actions";
@@ -33,7 +34,8 @@ class Signup extends Component {
   validateSchema = () => (
     Yup.object().shape({ 
       email: Yup.string().email("Not a valid email.").required("You need an email!"),
-      password: Yup.string().min(5, "Too short!").required("You need a password!")
+      password: Yup.string().min(5, "Too short!").required("You need a password!"),
+      recaptcha: Yup.string().required("Please confirm you're not a robot!")
     })
   );
 
@@ -57,7 +59,7 @@ class Signup extends Component {
     </Message>
   );
 
-  renderForm = ({ isSubmitting }) => {
+  renderForm = ({ isSubmitting, setFieldValue }) => {
     return (
       <Segment stacked padded="very">
         <div style={{ textAlign: "center" }}>
@@ -73,6 +75,14 @@ class Signup extends Component {
           <ErrorMessage name="password" component={this.renderError} />
           <SemField type="password" fluid icon="lock" iconPosition="left" component={SemForm.Input} name="confirmPassword" placeholder="confirm password" />
           <ErrorMessage name="confirmPassword" component={this.renderError} />
+          <Recaptcha
+            onloadCallback={() => console.log("recaptcha loaded")}
+            verifyCallback={response => setFieldValue("recaptcha", response)}
+            expiredCallback={() => setFieldValue("recaptcha", "")}
+            center={true}
+          >
+            <ErrorMessage name="recaptcha" component={this.renderError} />
+          </Recaptcha>
           <Button 
             type="submit" 
             style={{ marginTop: "20px" }} 
@@ -112,7 +122,7 @@ class Signup extends Component {
     return (
       <Formik 
         render={this.renderWithQuery}
-        initialValues={{ email: "", password: "", confirmPassword: "" }}
+        initialValues={{ email: "", password: "", confirmPassword: "", recaptcha: "" }}
         validationSchema={this.validateSchema}
         validate={this.validateForm}
         onSubmit={this.onSubmit}

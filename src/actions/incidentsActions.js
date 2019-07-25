@@ -24,7 +24,7 @@ export const fetchIncidents = (callback=null) => async (dispatch, getState) => {
     let omittedKeys = ["useCurrentLocation", "radius"];
 
     const response = await server.post(
-      "/api/fetchincidents", 
+      "/api/incidents", 
       discoverFormCache ? { 
         directionSearchParams: _.omit(discoverFormCache, omittedKeys), 
         ...extraParams.radius && { extraParams } 

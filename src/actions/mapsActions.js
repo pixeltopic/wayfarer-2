@@ -12,7 +12,7 @@ export const fetchDirections = (searchProps, callbackFinal=null, callbackError=n
       headers : { authorization: getState().auth.authenticated }  
     };
     
-    const response = await server.post("/api/fetchdirections", searchProps, getState().auth.authenticated ? config : null);
+    const response = await server.post("/api/directions", searchProps, getState().auth.authenticated ? config : null);
 
     if (callbackInitial) callbackInitial();
     

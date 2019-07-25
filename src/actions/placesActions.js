@@ -12,7 +12,7 @@ export const fetchPlaces = (searchProps, callback=null, callbackError=null) => a
       headers : { authorization: getState().auth.authenticated }  
     };
     
-    const response = await server.post("/api/fetchplaces", searchProps, getState().auth.authenticated ? config : null);
+    const response = await server.post("/api/places", searchProps, getState().auth.authenticated ? config : null);
 
     dispatch({ type: FETCH_PLACES, payload: response.data });
     if (response.data.places && response.data.places.address && getState().form[formNames.SEARCH_PLACE_FORM]) {
@@ -35,7 +35,7 @@ export const fetchMorePlaces = (callback=null, callbackError=null) => async (dis
     };
 
     if (getState().places.nextPageToken) {
-      const response = await server.post("/api/fetchplaces/token", { nextPageToken: getState().places.nextPageToken }, getState().auth.authenticated ? config : null);
+      const response = await server.post("/api/places/token", { nextPageToken: getState().places.nextPageToken }, getState().auth.authenticated ? config : null);
       dispatch({ type: FETCH_MORE_PLACES, payload: response.data });
     }
 
@@ -61,7 +61,7 @@ export const fetchPlaceDetails = (place_id, callback=null, callbackError=null) =
       return;
     }
 
-    const response = await server.post("/api/fetchplacedetails", { place_id }, getState().auth.authenticated ? config : null);
+    const response = await server.post("/api/places/details", { place_id }, getState().auth.authenticated ? config : null);
 
     dispatch({ type: FETCH_PLACE_DETAILS, payload: response.data });
 

@@ -18,7 +18,7 @@
     "react-scripts": "2.1.2",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "semantic-ui-react": "^0.84.0",
+    "semantic-ui-react": "^0.87.3",
     "yup": "^0.26.6"
   },
   "scripts": {
